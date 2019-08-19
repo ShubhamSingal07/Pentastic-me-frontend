@@ -1,0 +1,54 @@
+@import 'variables.scss';
+
+// .quill {
+//   position: relative;
+// }
+
+.ql-toolbar {
+  position: sticky;
+  top: 48px;
+  opacity: 1;
+  background: $lightBlue;
+  margin-bottom: 100px;
+  z-index: 1;
+  border: none !important;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.ql-formats > button,
+.ql-formats > span {
+  transition-duration: $transitionDuration;
+  border-radius: 7px;
+  &:hover {
+    box-shadow: $toolbarBoxShadow;
+    transform: scale(1.1);
+  }
+}
+
+.ql-active {
+  box-shadow: $toolbarBoxShadow;
+}
+
+.ql-container {
+  border-top: 1px solid #ccc !important;
+  margin: 0 auto;
+  width: 95%;
+  max-width: 700px;
+  // border-bottom: none !important;
+}
+
+.ql-snow .ql-editor pre.ql-syntax {
+  background-color: #f2f2f2;
+  color: black;
+}
+
+#counter {
+  // border: 1px solid #ccc;
+  // border-top: none;
+  margin: 0 auto;
+  width: 95%;
+  max-width: 700px;
+  color: #ccc;
+  text-align: right;
+}
