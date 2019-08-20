@@ -8,16 +8,7 @@ const loginSuccess = payload => ({
 export const authenticateUser = id => async dispatch => {
   try {
     const URL = process.env.URL;
-    const response = await fetch(
-      `${URL}/api/token?id=${id}`,
-      // , {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/x-www-form-urlencoded',
-      //   },
-      //   body: `id=${id}`,
-      // }
-    );
+    const response = await fetch(`${URL}/api/token?id=${id}`);
     const res = await response.json();
     if (response.status == 200) {
       return dispatch(loginSuccess({ token: res.token }));

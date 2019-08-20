@@ -1,30 +1,32 @@
 import Actions from '../actions';
 
-const authReducer = (
+const userReducer = (
   state = {
-    loggedIn: false,
+    data: undefined,
   },
   { type, payload },
 ) => {
   switch (type) {
     case Actions.loginSuccess:
       return {
-        loggedIn: true,
+        ...state,
+        data: payload.user,
       };
     case Actions.fetchHomePageSuccess: {
       if (payload.reset)
         return {
-          loggedIn: payload.loggedIn,
+          ...state,
+          data: payload.user,
         };
       return state;
     }
-    case Actions.fetchStoriesSuccess:
-      return {
-        loggedIn: payload.loggedIn,
-      };
-    default:
+    case Actions.fetchStoriesSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
       return state;
+    }
   }
 };
-
-export default authReducer;

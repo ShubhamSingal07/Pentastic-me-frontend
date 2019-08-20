@@ -10,9 +10,9 @@ class Home extends React.Component {
     const userid = this.props.location.search.substring(4);
 
     if (userid) {
-      console.log('printing',userid)
-      this.props.history.push('/')
-      await authenticateUser(userid);
+      console.log('printing', userid);
+      this.props.history.push('/');
+      await login(userid);
     }
     await Actions.fetchHomePage();
   }
@@ -46,7 +46,7 @@ const mapStateToProps = ({ auth }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  authenticateUser: id => dispatch(Actions.authenticateUser(id)),
+  login: id => dispatch(Actions.login(id)),
 });
 
 export default connect(

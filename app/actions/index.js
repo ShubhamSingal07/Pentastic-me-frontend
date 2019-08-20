@@ -1,2 +1,2 @@
-export * from './authenticateUser';
+export * from './login';
 export * from './fetchHomePage';
