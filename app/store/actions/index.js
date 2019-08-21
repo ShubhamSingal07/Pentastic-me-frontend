@@ -31,4 +31,8 @@ export default keymirror({
   fetchDraftFail: null,
   fetchBookmarksSuccess: null,
   fetchBookmarksFail: null,
+  fetchAboutSuccess: null,
+  fetchAboutFail: null,
+  fetchContactSuccess: null,
+  fetchContactFail: null,
 });
