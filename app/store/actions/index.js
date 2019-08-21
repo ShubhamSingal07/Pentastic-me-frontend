@@ -15,6 +15,10 @@ export default keymirror({
   clapStoryFail: null,
   unclapStorySuccess: null,
   unclapStoryFail: null,
+  likePhotosSuccess: null,
+  likePhotosFail: null,
+  dislikePhotosSuccess: null,
+  dislikePhotosFail: null,
   likePhotoSuccess: null,
   likePhotoFail: null,
   dislikePhotoSuccess: null,
@@ -35,4 +39,6 @@ export default keymirror({
   fetchAboutFail: null,
   fetchContactSuccess: null,
   fetchContactFail: null,
+  fetchPhotoSuccess: null,
+  fetchPhotoFail: null,
 });

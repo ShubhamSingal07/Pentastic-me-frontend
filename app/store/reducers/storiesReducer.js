@@ -12,20 +12,24 @@ const storiesReducer = (
       return {
         ...state,
         data: payload.stories,
+        error: undefined,
       };
     case Actions.fetchHomePageFail:
       return {
         ...state,
+        data: [],
         error: payload.error,
       };
     case Actions.fetchStoriesSuccess:
       return {
         ...state,
         data: payload.stories,
+        error: undefined,
       };
     case Actions.fetchStoriesFail:
       return {
         ...state,
+        data: undefined,
         error: payload.error,
       };
     default:

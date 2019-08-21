@@ -1,18 +1,6 @@
-import Actions from '../../store/actions';
-
-const fetchContactSuccess = payload => ({
-  type: Actions.fetchContactSuccess,
-  payload,
-});
-
-const fetchContactFail = payload => ({
-  type: Actions.fetchContactFail,
-  payload,
-});
-
 const URL = process.env.URL;
 
-export const fetchContact = () => async dispatch => {
+export const fetchContact = async () => {
   try {
     const response = await fetch(`${URL}/api/contact`, {
       headers: {
@@ -20,15 +8,10 @@ export const fetchContact = () => async dispatch => {
       },
     });
     const data = await response.json();
-    if (response.status === 200) {
-      return dispatch(fetchContactSuccess(data));
-    }
-    return dispatch(fetchContactFail(data));
+    return data;
   } catch (err) {
-    return dispatch(
-      fetchContactFail({
-        error: 'Oops! Looks like something went wrong',
-      }),
-    );
+    return {
+      error: 'Oops! Looks like something went wrong',
+    };
   }
 };

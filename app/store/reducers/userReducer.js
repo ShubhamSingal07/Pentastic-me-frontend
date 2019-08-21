@@ -28,5 +28,27 @@ const userReducer = (
         };
       return state;
     }
+    case Actions.fetchPhotosSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+      return state;
+    }
+    case Actions.fetchStorySuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+    }
+    case Actions.fetchPhotoSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+    }
   }
 };

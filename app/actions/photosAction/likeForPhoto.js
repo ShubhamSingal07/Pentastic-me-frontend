@@ -1,8 +1,7 @@
 import Actions from '../../store/actions';
 
-const likePhotoSuccess = payload => ({
+const likePhotoSuccess = () => ({
   type: Actions.likePhotoSuccess,
-  payload,
 });
 
 const likePhotoFail = payload => ({
@@ -10,9 +9,8 @@ const likePhotoFail = payload => ({
   payload,
 });
 
-const dislikePhotoSuccess = payload => ({
+const dislikePhotoSuccess = () => ({
   type: Actions.dislikePhotoSuccess,
-  payload,
 });
 
 const dislikePhotoFail = payload => ({
@@ -30,7 +28,7 @@ export const likePhoto = ({ photoId }) => async dispatch => {
     });
     const data = await response.json();
     if (response.status === 200) {
-      return dispatch(likePhotoSuccess({ photoId }));
+      return dispatch(likePhotoSuccess());
     }
     return dispatch(likePhotoFail(data));
   } catch (err) {
@@ -52,7 +50,7 @@ export const dislikePhoto = ({ photoId }) => async dispatch => {
     });
     const data = await response.json();
     if (response.status === 200) {
-      return dispatch(dislikePhotoSuccess({ photoId }));
+      return dispatch(dislikePhotoSuccess());
     }
     return dispatch(dislikePhotoFail(data));
   } catch (err) {

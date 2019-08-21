@@ -18,10 +18,34 @@ const authReducer = (
         };
       return state;
     }
-    case Actions.fetchStoriesSuccess:
-      return {
-        loggedIn: payload.loggedIn,
-      };
+    case Actions.fetchStoriesSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.fetchPhotosSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.fetchStorySuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.fetchPhotoSuccess:{
+       if (payload.reset)
+         return {
+           loggedIn: payload.loggedIn,
+         };
+       return state;
+    }
     default:
       return state;
   }

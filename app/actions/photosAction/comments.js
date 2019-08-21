@@ -32,7 +32,7 @@ const deleteCommentFail = payload => ({
 
 const URL = process.env.URL;
 
-export const addComment = ({ photoId, comment }) => async dispatch => {
+export const addComment = ({ userId, name, photoId, comment }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/photo/comment/add/${photoId}`, {
       method: 'PATCH',
@@ -44,7 +44,9 @@ export const addComment = ({ photoId, comment }) => async dispatch => {
     });
     const data = await response.json();
     if (response.status === 200) {
+      data.userId = userId;
       data.comment = comment;
+      data.name = name;
       return dispatch(addCommentSuccess(data));
     }
     return dispatch(addCommentFail(data));
@@ -69,6 +71,7 @@ export const editComment = ({ photoId, commentId, comment }) => async dispatch =
     });
     const data = await response.json();
     if (response.status === 200) {
+      data.photoId = photoId;
       data.commentId = commentId;
       data.comment = comment;
       return dispatch(editCommentSuccess(data));
