@@ -9,11 +9,16 @@ export const authenticateUser = id => async dispatch => {
   try {
     const URL = process.env.URL;
     const response = await fetch(`${URL}/api/token?id=${id}`);
-    const res = await response.json();
-    if (response.status == 200) {
-      return dispatch(loginSuccess({ token: res.token }));
+    const data = await response.json();
+    if (response.status === 200) {
+      return dispatch(loginSuccess(data));
     }
+    return dispatch(loginFail(data));
   } catch (err) {
-    console.log('could not complete fetch request', err);
+    return dispatch(
+      loginFail({
+        error: 'Oops! Looks like something went wrong',
+      }),
+    );
   }
 };

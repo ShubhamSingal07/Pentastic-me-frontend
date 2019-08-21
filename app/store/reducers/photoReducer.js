@@ -1,6 +1,6 @@
 import Actions from '../actions';
 
-export const photoReducer = (
+const photoReducer = (
   state = {
     data: undefined,
     error: undefined,
@@ -91,5 +91,9 @@ export const photoReducer = (
         ...state,
         error: payload.error,
       };
+    default:
+      return state;
   }
 };
+
+export default photoReducer;

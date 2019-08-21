@@ -55,6 +55,8 @@ const storyReducer = (
         ...state,
         error: payload.error,
       };
+    default:
+      return state;
   }
 };
 

@@ -39,12 +39,26 @@ const authReducer = (
         };
       return state;
     }
-    case Actions.fetchPhotoSuccess:{
-       if (payload.reset)
-         return {
-           loggedIn: payload.loggedIn,
-         };
-       return state;
+    case Actions.fetchPhotoSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.fetchAboutSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.fetchContactSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
     }
     default:
       return state;

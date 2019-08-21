@@ -50,5 +50,23 @@ const userReducer = (
           data: payload.user,
         };
     }
+    case Actions.fetchAboutSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+    }
+    case Actions.fetchContactSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+    }
+    default:
+      return state;
   }
 };
+
+export default userReducer;
