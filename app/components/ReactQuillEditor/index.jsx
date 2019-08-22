@@ -10,7 +10,7 @@ import dividerIcon from './icons/divider.svg';
 
 class Editor extends React.PureComponent {
   state = {
-    editorHtml: '',
+    // editorHtml: '',
     countOfWords: '',
   };
 
@@ -32,11 +32,11 @@ class Editor extends React.PureComponent {
     this.quillRef.setSelection(range.index + 2, Quill.sources.SILENT);
   };
 
-  handleHtmlChange = html => {
-    this.setState({
-      editorHtml: html,
-    });
-  };
+  // handleHtmlChange = html => {
+  //   this.setState({
+  //     editorHtml: html,
+  //   });
+  // };
 
   registerFormats() {
     if (typeof this.editor.getEditor !== 'function') return;
@@ -76,8 +76,8 @@ class Editor extends React.PureComponent {
   }
 
   render() {
-    const { editorHtml, countOfWords } = this.state;
-    const { readOnly } = this.props;
+    const { countOfWords } = this.state;
+    const { readOnly, handleChange, value } = this.props;
     return (
       <div>
         <div id="toolbar">
@@ -141,8 +141,8 @@ class Editor extends React.PureComponent {
           ref={editor => {
             this.editor = editor;
           }}
-          value={editorHtml}
-          onChange={this.handleHtmlChange}
+          value={value}
+          onChange={handleChange}
           theme="snow"
           readOnly={readOnly}
           placeholder="Tell your Story..."

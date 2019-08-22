@@ -6,22 +6,25 @@ import { Provider } from 'react-redux';
 import './styles/main.scss';
 
 import store from './store';
-import Home from './containers/Home';
-import Stories from './containers/Stories';
-import Photos from './containers/Photos';
-import Drafts from './containers/Drafts';
-import Favourites from './containers/Favourites';
-import About from './containers/About';
-import Contact from './containers/Contact';
-import Logout from './containers/Logout';
+import Home from './pages/Home';
+import Stories from './pages/Stories';
+import Photos from './pages/Photos';
+import Drafts from './pages/Drafts';
+import Favourites from './pages/Favourites';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import Logout from './pages/Logout';
 
 const App = () => (
   <Provider store={store}>
     <Router>
       <Switch>
-        <Route path="/stories" exact component={Stories} />
-        <Route path="/photos" exact component={Photos} />
+        <Route path="/stories/page/:pageNo" exact component={Stories} />
+        <Route path="/stories/:storyId" exact component={Story} />
+        <Route path="/photos/page/:pageNo" exact component={Photos} />
+        <Route path="/photos/:photoId" exact component={Photo} />
         <Route path="/drafts" exact component={Drafts} />
+        <Route path="/drafts/:draftId" exact component={Draft} />
         <Route path="/favourites" exact component={Favourites} />
         <Route path="/about" exact component={About} />
         <Route path="/contact" exact component={Contact} />
