@@ -23,7 +23,7 @@ const photoReducer = (
     case Actions.likePhotoSuccess: {
       const data = state.data;
       data.isLiked = true;
-      data.likes = data.likes + 1;
+      data.likes.total = data.likes.total + 1;
       return {
         ...state,
         data,
@@ -31,6 +31,21 @@ const photoReducer = (
       };
     }
     case Actions.likePhotoFail:
+      return {
+        ...state,
+        error: payload.error,
+      };
+    case Actions.dislikePhotoSuccess: {
+      const data = state.data;
+      data.isLiked = false;
+      data.likes.total = data.likes.total - 1;
+      return {
+        ...state,
+        data,
+        error: undefined,
+      };
+    }
+    case Actions.dislikePhotoFail:
       return {
         ...state,
         error: payload.error,

@@ -57,7 +57,7 @@ class Contact extends React.Component {
     return (
       <div>
         <h1>Contact</h1>
-        {role === 'Admin' ? (
+        {role === 'Admin' && !showSave ? (
           <div>
             <button onClick={this.handleEditClick}>Edit</button>
           </div>

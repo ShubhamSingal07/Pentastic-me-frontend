@@ -3,46 +3,46 @@ import { connect } from 'react-redux';
 
 import * as Actions from '../../actions';
 import Navbar from '../../components/Navbar';
-import DraftsList from '../../components/DraftsList';
+import StoriesList from '../../components/StoriesList';
 
-class Drafts extends React.Component {
+class Bookmarks extends React.Component {
   state = {
     loading: false,
   };
 
   componentDidMount() {
-    const { fetchDrafts } = this.props;
+    const { fetchBookmarks } = this.props;
     this.setState({ loading: true });
-    fetchDrafts();
+    fetchBookmarks();
     this.setState({ loading: false });
   }
 
   render() {
     const { loading } = this.state;
-    const { drafts } = this.props;
+    const { bookmarks } = this.props;
 
     if (loading) return <div>Loading</div>;
 
-    if (drafts.error) return <div>{drafts.error}</div>;
+    if (bookmarks.error) return <div>{bookmarks.error}</div>;
 
     return (
       <div>
         <Navbar />
-        <DraftsList drafts={drafts.data} />
+        <StoriesList stories={bookmarks.data} bookmarkPage={true} />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ drafts }) => ({
-  drafts,
+const mapStateToProps = ({ bookmarks }) => ({
+  bookmarks,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchDrafts: () => dispatch(Actions.fetchDrafts()),
+  fetchBookmarks: () => dispatch(Actions.fetchBookmarks()),
 });
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Drafts);
+)(Bookmarks);

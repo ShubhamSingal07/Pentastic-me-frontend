@@ -22,7 +22,7 @@ const fetchDraftFail = payload => ({
 
 const URL = process.env.URL;
 
-export const fetchDrafts = ({ loggedIn }) => async dispatch => {
+export const fetchDrafts = () => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/draft`, {
       headers: {
@@ -31,8 +31,6 @@ export const fetchDrafts = ({ loggedIn }) => async dispatch => {
     });
     const data = await response.json();
     if (response.status === 200) {
-      data.loggedIn = date.user ? true : false;
-      data.reset = data.loggedIn === loggedIn ? false : true;
       return dispatch(fetchDraftsSuccess(data));
     }
     return dispatch(fetchDraftsFail(data));
@@ -45,7 +43,7 @@ export const fetchDrafts = ({ loggedIn }) => async dispatch => {
   }
 };
 
-export const fetchDraft = ({ draftId, loggedIn }) => async dispatch => {
+export const fetchDraft = ({ draftId }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/draft?draftId=${draftId}`, {
       headers: {

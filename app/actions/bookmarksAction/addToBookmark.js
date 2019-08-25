@@ -1,17 +1,36 @@
+import Actions from '../../store/actions';
+
+const addBookmarkSuccess = () => ({
+  type: Actions.addBookmarkSuccess,
+});
+
+const addBookmarkFail = payload => ({
+  type: Actions.addBookmarkFail,
+  payload,
+});
+
 const URL = process.env.URL;
 
-const addToBookmark = async storyId => {
+export const addToBookmark = storyId => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/bookmark`, {
       method: 'POST',
       headers: {
-        Auhtorization: `Token ${localStorage.jwt}`,
+        Authorization: `Token ${localStorage.jwt}`,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({ storyId }),
     });
-    return await response.json();
+    const data = await response.json();
+    if (response.status === 200) {
+      return dispatch(addBookmarkSuccess());
+    }
+    return dispatch(addBookmarkFail(data));
   } catch (err) {
-    return {
-      error: 'Oops! Looks like something qent wrong',
-    };
+    return dispatch(
+      addBookmarkFail({
+        error: 'Oops! Looks like something qent wrong',
+      }),
+    );
   }
 };

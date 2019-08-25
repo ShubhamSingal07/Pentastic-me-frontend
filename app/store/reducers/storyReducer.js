@@ -55,6 +55,38 @@ const storyReducer = (
         ...state,
         error: payload.error,
       };
+    case Actions.addBookmarkSuccess: {
+      const data = {
+        ...state.data,
+        isBookmarked: true,
+      };
+      return {
+        ...state,
+        data,
+        error: undefined,
+      };
+    }
+    case Actions.addBookmarkFail:
+      return {
+        ...state,
+        error: undefined,
+      };
+    case Actions.deleteBookmarkSuccess: {
+      const data = {
+        ...state.data,
+        isBookmarked: false,
+      };
+      return {
+        ...state,
+        data,
+        error: undefined,
+      };
+    }
+    case Actions.deleteBookmarkFail:
+      return {
+        ...state,
+        error: payload.error,
+      };
     default:
       return state;
   }

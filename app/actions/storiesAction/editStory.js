@@ -11,7 +11,6 @@ export const editStory = async (storyId, title, body, image) => {
       body: JSON.stringify({ title, body, image }),
     });
     return await response.json();
-    // return data;
   } catch (err) {
     return {
       error: 'Oops! Looks like something went wrong',

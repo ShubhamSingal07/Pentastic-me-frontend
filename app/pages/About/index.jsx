@@ -11,6 +11,7 @@ class About extends React.Component {
     readOnly: true,
     showSave: false,
   };
+
   componentDidMount() {
     const { about } = this.state;
     this.setState({
@@ -57,7 +58,7 @@ class About extends React.Component {
     return (
       <div>
         <h1>About me</h1>
-        {role === 'Admin' ? (
+        {role === 'Admin' && !showSave? (
           <div>
             <button onClick={this.handleEditClick}>Edit</button>
           </div>
