@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Carousel } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
@@ -10,29 +10,27 @@ class PhotosItem extends React.Component {
     likeLoading: false,
   };
 
+  handleLike = () => {
+    const { likePhotos, photo } = this.props;
+    this.setState({ likeLoading: true });
+    likePhotos({ photoId: photo.id });
+    this.setState({ likeLoading: false });
+  };
+
+  handleDislike = () => {
+    const { dislikePhotos, photo } = this.props;
+    this.setState({ likeLoading: true });
+    dislikePhotos({ photoId: photo.id });
+    this.setState({ likeLoading: false });
+  };
+
   render() {
     const { likeLoading } = this.state;
-    const { likePhotos, dislikePhotos, photo } = this.props;
-
-    const handleClick = () => {
-      <Redirect to={`/photos/${photo.id}`} />;
-    };
-
-    const handleLike = () => {
-      this.setState({ likeLoading: true });
-      likePhotos({ photoId: photo.id });
-      this.setState({ likeLoading: false });
-    };
-
-    const handleDislike = () => {
-      this.setState({ likeLoading: true });
-      dislikePhotos({ photoId: photo.id });
-      this.setState({ likeLoading: false });
-    };
+    const { photo } = this.props;
 
     return (
       <div>
-        <div onClick={handleClick}>
+        <Link to={`/photos/${photo.id}`}>
           {photo.url.length == 1 ? (
             <img src={photo.url[0]} />
           ) : (
@@ -42,16 +40,16 @@ class PhotosItem extends React.Component {
               ))}
             </Carousel>
           )}
-        </div>
+        </Link>
         <div>
-          {photo.isLiked ? <span onClick={handleLike}>Like</span> : <span onClick={handleDislike}>Dislike</span>}
-          <span onClick={handleCLick}>Comment</span>
+          {photo.isLiked ? <span onClick={this.handleLike}>Like</span> : <span onClick={this.handleDislike}>Dislike</span>}
+          <Link to={`/photos/${photo.id}`}>Comment</Link>
         </div>
         {photo.comments.total > 0 ? (
-          <div onClick={handleClick}>
+          <Link to={`/photos/${photo.id}`}>
             View {photo.comments.total == 1 ? null : 'all'} {photo.comments.total}{' '}
             {photo.comments.total == 1 ? 'comment' : 'comments'}
-          </div>
+          </Link>
         ) : null}
       </div>
     );

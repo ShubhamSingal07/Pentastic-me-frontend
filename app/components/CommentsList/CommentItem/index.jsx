@@ -11,27 +11,30 @@ class CommentItem extends React.Component {
     commentInput: this.props.comment.body,
   };
 
+  handleSaveEditedComment = () => {
+    const { commentInput } = this.state;
+    const { photoId, editComment } = this.props;
+    this.setState({ editLoading: true });
+    editComment({ photoId, commentId: comment.Id, comment: commentInput });
+    this.setState({ editLoading: false, editComment: false });
+  };
+
+  handleDeleteComment = () => {
+    const { deleteComment, photoId } = this.props;
+    this.setState({ deleteLoading: true });
+    deleteComment({ photoId, commentId: comment.id });
+    this.setState({ deleteLoading: false });
+  };
+
+  handleValueChange = e => {
+    this.setState({
+      commentInput: e.target.value,
+    });
+  };
+
   render() {
     const { editLoading, deleteLoading, commentInput, editComment } = this.state;
-    const { photoId, userId, editComment, deleteComment, comment } = this.props;
-
-    const handleSaveEditedComment = () => {
-      this.setState({ editLoading: true });
-      editComment({ photoId, commentId: comment.Id, comment: commentInput });
-      this.setState({ editLoading: false, editComment: false });
-    };
-
-    const handleDeleteComment = () => {
-      this.setState({ deleteLoading: true });
-      deleteComment({ photoId, commentId: comment.id });
-      this.setState({ deleteLoading: false });
-    };
-
-    const handleValueChange = e => {
-      this.setState({
-        commentInput: e.target.value,
-      });
-    };
+    const { userId, comment } = this.props;
 
     return (
       <div>
@@ -45,11 +48,11 @@ class CommentItem extends React.Component {
               <span onClick={() => this.setState({ editComment: true })}>Edit</span>
             ) : (
               <div>
-                <input type="text" value={commentInput} onChange={handleValueChange} placeholder="Add a comment" />
-                <span onClick={handleSaveEditedComment}>Save</span>
+                <input type="text" value={commentInput} onChange={this.handleValueChange} placeholder="Add a comment" />
+                <span onClick={this.handleSaveEditedComment}>Save</span>
               </div>
             )}
-            <span onClick={handleDeleteComment}>Delete</span>
+            <span onClick={this.handleDeleteComment}>Delete</span>
           </div>
         ) : null}
       </div>

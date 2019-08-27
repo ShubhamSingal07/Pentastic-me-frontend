@@ -11,8 +11,10 @@ class Contact extends React.Component {
     readOnly: true,
     showSave: false,
   };
+  
   componentDidMount() {
     const { about } = this.state;
+    const { fetchContact } = this.props;
     this.setState({
       loading: true,
     });

@@ -64,7 +64,7 @@ class About extends React.Component {
           </div>
         ) : null}
         {showSave ? <button onClick={this.handleSaveClick}>Save</button> : null}
-        <ReactQuillEditor readOnly={readOnly} value={aboutHtml} handleChange={handleAboutChange} />
+        <ReactQuillEditor readOnly={readOnly} value={aboutHtml} handleChange={this.handleAboutChange} />
       </div>
     );
   }

@@ -14,37 +14,40 @@ class Photo extends React.Component {
     commentInput: '',
   };
 
+  handleLike = () => {
+    const { likePhoto, photo, loggedIn } = this.props;
+    if (!loggedIn) return <Redirect to="http://localhost:5000/auth/login" />;
+    this.setState({ likeLoading: true });
+    likePhoto({ photoId: photo.id });
+    this.setState({ likeLoading: false });
+  };
+
+  handleDislike = () => {
+    const { dislikePhoto, photo, loggedIn } = this.props;
+    if (!loggedIn) return <Redirect to="http://localhost:5000/auth/login" />;
+    this.setState({ likeLoading: true });
+    dislikePhoto({ photoId: photo.id });
+    this.setState({ likeLoading: false });
+  };
+
+  handleAddComment = () => {
+    const { addComment, user, loggedIn } = this.props;
+    if (!loggedIn) return <Redirect to="http://localhost:5000/auth/login" />;
+    this.setState({ commentLoading: true });
+    addComment({ userId: user.id, name: user.username, photoId: photo.id, commentInput });
+    this.setState({ commentLoading: false });
+  };
+
+  handleValueChange = e => {
+    this.setState({
+      commentInput: e.target.value,
+    });
+  };
+
   render() {
-    const { photo, likePhoto, dislikePhoto, user, loggedIn, addComment } = this.props;
+    const { photo } = this.props;
     const { isLiked, commentInput } = this.state;
     this.setState({ isLiked: photo.isLiked });
-
-    const handleLike = () => {
-      if (!loggedIn) return <Redirect to="http://localhost:5000/auth/login" />;
-      this.setState({ likeLoading: true });
-      likePhoto({ photoId: photo.id });
-      this.setState({ likeLoading: false });
-    };
-
-    const handleDislike = () => {
-      if (!loggedIn) return <Redirect to="http://localhost:5000/auth/login" />;
-      this.setState({ likeLoading: true });
-      dislikePhoto({ photoId: photo.id });
-      this.setState({ likeLoading: false });
-    };
-
-    handleAddComment = () => {
-      if (!loggedIn) return <Redirect to="http://localhost:5000/auth/login" />;
-      this.setState({ commentLoading: true });
-      addComment({ userId: user.id, name: user.username, photoId: photo.id, commentInput });
-      this.setState({ commentLoading: false });
-    };
-
-    const handleValueChange = e => {
-      this.setState({
-        commentInput: e.target.value,
-      });
-    };
 
     return (
       <div>
@@ -59,9 +62,9 @@ class Photo extends React.Component {
         </div>
         <div>
           {photo.likes.total > 0 ? <span>{photo.likes.total}</span> : null}
-          {isLiked ? <button onClick={handleDislike}>Dislike</button> : <button onClick={handleLike}>Like</button>}
-          <button onClick={handleAddComment}>Add Comment</button>
-          <input name="comment" value={commentInput} placeholder="Add a comment" onChange={handleValueChange} />
+          {isLiked ? <button onClick={this.handleDislike}>Dislike</button> : <button onClick={this.handleLike}>Like</button>}
+          <button onClick={this.handleAddComment}>Add Comment</button>
+          <input name="comment" value={commentInput} placeholder="Add a comment" onChange={this.handleValueChange} />
           <div>{photo.comments.total > 0 ? <span>{photo.comments.total} comments</span> : null}</div>
           <CommentsList comments={photo.comments.comment} />
         </div>

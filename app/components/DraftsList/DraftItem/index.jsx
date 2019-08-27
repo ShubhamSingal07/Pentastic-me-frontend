@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import * as Actions from '../../../actions';
 
@@ -8,19 +8,15 @@ class DraftItem extends React.Component {
   render() {
     const { draft, deleteDrafts } = this.props;
 
-    const handleClick = () => {
-      return <Redirect to={`/draft/${draft.id}`} />;
-    };
-
     const handleRemoveDraft = () => {
-      deleteDrafts({ drafatId: draft.id });
+      deleteDrafts({ draftId: draft.id });
     };
 
     return (
       <div>
-        <div onClick={handleClick}>
+        <Link to={`/draft/${draft.id}`}>
           <h2>{draft.title}</h2>
-        </div>
+        </Link>
         <button onClick={handleRemoveDraft}>Remove</button>
       </div>
     );

@@ -6,6 +6,7 @@ import * as Actions from '../../actions';
 import PublishModal from '../../components/PublishModal';
 import DraftSaveModal from '../../components/DraftSaveModal';
 import ReactQuillEditor from '../../components/ReactQuillEditor';
+import { async } from 'q';
 
 class Draft extends React.Component {
   state = {
@@ -28,27 +29,6 @@ class Draft extends React.Component {
     this.setState({ loading: false, draftHtml: draft.data.body });
   }
 
-  async handleSaveCLick() {
-    const { title, draftHtml } = this.state;
-    const { draft } = this.props;
-    this.setState({ saveLoading: true, error: undefined });
-    const data = await Actions.addDraft(title, draftHtml, draft.id);
-    if (data.error) this.setState({ saveLoading: false, error: data.error, showDraftModal: false });
-    else this.setState({ saveLoading: false, error: undefined, showDraftModal: false });
-  }
-
-  async handlePublishClick() {
-    const { title, draftHtml, image } = this.state;
-    const { draft } = this.props;
-    this.setState({ publishloading: true, error: undefined });
-    const data = await Actions.publishDraft(draft.id, title, draftHtml, image);
-    if (data.error) this.setState({ publishloading: false, error: data.error, showPublishModal: false });
-    else {
-      this.setState({ publishLoading: false, error: undefined, showPublishModal: false });
-      return <Redirect to={`/stories/${data.storyId}`} />;
-    }
-  }
-
   showDraftModal() {
     this.setState({ showDraftModal: true });
   }
@@ -65,23 +45,44 @@ class Draft extends React.Component {
     this.setState({ showPublishModal: false });
   }
 
+  handleDraftHtmlChange = html => {
+    this.setState({
+      draftHtml: html,
+    });
+  };
+
+  handleTitleChange = e => {
+    this.setState({ title: e.target.value });
+  };
+
+  handleImageChange = data => {
+    this.setState({ image: data });
+  };
+
+  handleSaveClick = async () => {
+    const { title, draftHtml } = this.state;
+    const { draft } = this.props;
+    this.setState({ saveLoading: true, error: undefined, showDraftModal: false });
+    const data = await Actions.addDraft(title, draftHtml, draft.id);
+    if (data.error) this.setState({ saveLoading: false, error: data.error });
+    else this.setState({ saveLoading: false, error: undefined });
+  };
+
+  handlePublishClick = async () => {
+    const { title, draftHtml, image } = this.state;
+    const { draft } = this.props;
+    this.setState({ publishloading: true, error: undefined, showPublishModal: false });
+    const data = await Actions.publishDraft(draft.id, title, draftHtml, image);
+    if (data.error) this.setState({ publishloading: false, error: data.error });
+    else {
+      this.setState({ publishLoading: false, error: undefined });
+      return <Redirect to={`/stories/${data.storyId}`} />;
+    }
+  };
+
   render() {
     const { draftHtml, loading, error, showDraftModal, showPublishModal } = this.state;
     const { draft } = this.props;
-
-    const handleDraftHtmlChange = html => {
-      this.setState({
-        draftHtml: html,
-      });
-    };
-
-    const handleTitleChange = e => {
-      this.setState({ title: e.target.value });
-    };
-
-    const handleImageChange = e => {
-      this.setState({ image: e.target.value });
-    };
 
     if (loading) return <div>Loading</div>;
 
@@ -95,16 +96,22 @@ class Draft extends React.Component {
           <button onClick={this.showDraftModal}>Save</button>
           <button onClick={this.showPublishModal}>Publish</button>
         </div>
-        {showDraftModal ? <DraftSaveModal handleClick={this.handleSaveCLick} hideModal={this.hideDraftModal} /> : null}
+        {showDraftModal ? (
+          <DraftSaveModal
+            titleChange={this.handleTitleChange}
+            handleClick={this.handleSaveClick}
+            hideModal={this.hideDraftModal}
+          />
+        ) : null}
         {showPublishModal ? (
           <PublishModal
-            titleChange={handleTitleChange}
-            imageChange={handleImageChange}
+            titleChange={this.handleTitleChange}
+            imageChange={this.handleImageChange}
             handleClick={this.handlePublishClick}
             hideModal={this.hidePublishModal}
           />
         ) : null}
-        <ReactQuillEditor readOnly={false} value={draftHtml} handleChange={handleDraftHtmlChange} />
+        <ReactQuillEditor readOnly={false} value={draftHtml} handleChange={this.handleDraftHtmlChange} />
       </div>
     );
   }

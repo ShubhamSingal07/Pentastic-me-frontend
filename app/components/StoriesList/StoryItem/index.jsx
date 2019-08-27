@@ -1,24 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import * as Actions from '../../../actions';
 
-const StoryItem = ({ story, deleteBookmarks, bookmarkPage, bookmarks }) => {
+const StoryItem = ({ story, deleteBookmarks, bookmarkPage }) => {
   handleDeleteBookmark = () => {
     deleteBookmarks({ storyId: story.id });
   };
 
-  handleClick = () => {
-    <Redirect to={`/stories/${story.id}`} />;
-  };
-
   return (
     <div>
-      <div onClick={handleClick}>
+      <Link to={`/stories/${story.id}`}>
         <img src={story.image} width="100px" height="100px" />
         <span>{story.title}</span>
-      </div>
+      </Link>
       {bookmarkPage ? <button onClick={handleDeleteBookmark}>Remove</button> : null}
     </div>
   );
