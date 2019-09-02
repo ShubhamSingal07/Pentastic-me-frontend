@@ -5,7 +5,12 @@ const loginSuccess = payload => ({
   payload,
 });
 
-export const authenticateUser = id => async dispatch => {
+const loginFail = payload => ({
+  type: Actions.loginFail,
+  payload,
+});
+
+export const login = id => async dispatch => {
   try {
     const URL = process.env.URL;
     const response = await fetch(`${URL}/api/token?id=${id}`);

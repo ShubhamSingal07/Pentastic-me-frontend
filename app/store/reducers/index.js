@@ -8,6 +8,10 @@ import photosReducer from './photosReducer';
 import storiesReducer from './storiesReducer';
 import storyReducer from './storyReducer';
 import userReducer from './userReducer';
+import bookmarksReducer from './bookmarksReducer';
+import draftsReducer from './draftsReducer';
+import draftReducer from './draftReducer';
+import imagesReducer from './imagesReducer';
 
 const Reducer = combineReducers({
   about: aboutReducer,
@@ -18,6 +22,10 @@ const Reducer = combineReducers({
   stories: storiesReducer,
   story: storyReducer,
   user: userReducer,
+  bookmarks: bookmarksReducer,
+  draft: draftReducer,
+  drafts: draftsReducer,
+  images: imagesReducer,
 });
 
 export default Reducer;

@@ -2,13 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
+import './style.scss';
 import * as Actions from '../../actions';
 import ReactQuillEditor from '../../components/ReactQuillEditor';
 import PublishModal from '../../components/PublishModal';
 
 class Story extends React.Component {
   state = {
+    title: '',
+    image: '',
     storyHtml: '',
+    loading: false,
     clapLoading: false,
     bookmarkLoading: false,
     readOnly: true,
@@ -18,12 +22,12 @@ class Story extends React.Component {
     error: undefined,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     const { match, fetchStory, loggedIn, story } = this.props;
     const storyId = match.params.storyId;
     this.setState({ loading: true });
-    fetchStory({ storyId, loggedIn });
-    this.setState({ loading: false, storyHtml: story.data.body });
+    const body = await fetchStory({ storyId, loggedIn });
+    this.setState({ loading: false, storyHtml: body });
   }
 
   hidePublishModal = () => {
@@ -31,38 +35,38 @@ class Story extends React.Component {
   };
 
   handleClapStory = () => {
-    const { clapStory } = this.props;
+    const { clapStory, loggedIn, story } = this.props;
     if (!loggedIn) return <Redirect to="http://localhost:3000/auth/login" />;
     this.setState({ clapLoading: true });
-    clapStory({ storyId: story.id });
+    clapStory({ storyId: story.data._id });
     this.setState({ clapLoading: false });
   };
 
   handleUnclapStory = () => {
-    const { unclapStory } = this.props;
+    const { unclapStory, story, loggedIn } = this.props;
     if (!loggedIn) return <Redirect to="http://localhost:3000/auth/login" />;
     this.setState({ clapLoading: true });
-    unclapStory({ storyId: story.id });
+    unclapStory({ storyId: story.data._id });
     this.setState({ clapLoading: false });
   };
 
   handleAddBookmarkStory = () => {
-    const { addToBookmark } = this.props;
+    const { addToBookmark, loggedIn, story } = this.props;
     if (!loggedIn) return <Redirect to="http://localhost:3000/auth/login" />;
     this.setState({ bookmarkLoading: true });
-    addToBookmark({ storyId: story.id });
+    addToBookmark({ storyId: story.data._id });
     this.setState({ bookmarkLoading: false });
   };
 
   handleRemoveBookmarkStory = () => {
-    const { deleteBookmark, loggedIn } = this.props;
+    const { deleteBookmark, loggedIn, story } = this.props;
     if (!loggedIn) return <Redirect to="http://localhost:3000/auth/login" />;
     this.setState({ bookmarkLoading: true });
-    deleteBookmark({ storyId: story.id });
+    deleteBookmark({ storyId: story.data._id });
     this.setState({ bookmarkLoading: false });
   };
 
-  handleStoryChange = html => {
+  handleStoryHtmlChange = html => {
     this.setState({ storyHtml: html });
   };
 
@@ -82,45 +86,55 @@ class Story extends React.Component {
     this.setState({ image });
   };
 
-  handlePublishClick = async () => {
+  handleEditStoryClick = async () => {
     const { title, storyHtml, image } = this.state;
+    const { story } = this.props;
     this.setState({ publishLoading: true, showPublishModal: false });
-    const data = await Actions.publishStory(title, storyHtml, image);
+    const data = await Actions.editStory(story.data._id, title, storyHtml, image);
     if (data.error) this.setState({ publishLoading: false, readOnly: false, error: data.error });
     else this.setState({ publishLoading: false, readOnly: true, showSave: false });
   };
 
   render() {
-    const { clapLoading, bookmarkLoading, storyHtml, showSave, publishLoading } = this.state;
+    const {
+      loading,
+      clapLoading,
+      bookmarkLoading,
+      storyHtml,
+      showSave,
+      publishLoading,
+      showPublishModal,
+      title,
+      readOnly,
+    } = this.state;
     const { story, role } = this.props;
-
     if (loading) return <div>Loading</div>;
 
     if (story.error) return <div>{story.error}</div>;
 
     return (
-      <div>
+      <div className="story-page">
         {role === 'Admin' && !showSave ? <button onClick={this.handleEditClick}>Edit</button> : null}
         {showSave ? <button onClick={this.handleSaveClick}>Save</button> : null}
-        {showPublishModal ? (
-          <PublishModal
-            titleChange={this.handleTitleChange}
-            imageChange={this.handleImageChange}
-            handleClick={this.handlePublishClick}
-            hideModal={this.hidePublishModal}
-          />
-        ) : null}
-        <ReactQuillEditor value={storyHtml} handleChange={this.handleStoryChange} readOnly={readOnly} />
+        <PublishModal
+          titleChange={this.handleTitleChange}
+          imageChange={this.handleImageChange}
+          show={showPublishModal}
+          handleClick={this.handleEditStoryClick}
+          onHide={this.hidePublishModal}
+          title={title}
+        />
+        <ReactQuillEditor handleChange={this.handleStoryHtmlChange} value={storyHtml} readOnly={readOnly} />
         <div>
           {story.data.isLiked ? (
-            <span onClick={this.handleUnclapStory}>Unclap</span>
+            <button onClick={this.handleUnclapStory}>Unclap</button>
           ) : (
-            <span onClick={this.handleClapStory}>Clap</span>
+            <button onClick={this.handleClapStory}>Clap</button>
           )}
           {story.data.isBookmarked ? (
-            <span onClick={this.handleRemoveBookmarkStory}>Unbookmark</span>
+            <button onClick={this.handleRemoveBookmarkStory}>Unbookmark</button>
           ) : (
-            <span onClick={this.handleAddBookmarkStory}>Bookmark</span>
+            <button onClick={this.handleAddBookmarkStory}>Bookmark</button>
           )}
         </div>
       </div>
@@ -132,6 +146,7 @@ const mapStateToProps = ({ story, auth, user }) => ({
   loggedIn: auth.loggedIn,
   story,
   role: user.data.role,
+  user,
 });
 
 const mapDispatchToProps = dispatch => ({

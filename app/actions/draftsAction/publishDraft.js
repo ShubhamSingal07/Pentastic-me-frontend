@@ -3,6 +3,7 @@ const URL = process.env.URL;
 export const publishDraft = async (draftId, title, body, image) => {
   try {
     const response = await fetch(`${URL}/api/draft/publish`, {
+      method: 'POST',
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
         'Content-Type': 'application/json',

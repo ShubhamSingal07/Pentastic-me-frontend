@@ -5,6 +5,12 @@ const common = require('./webpack.config');
 const BUILD_DIR = path.resolve(__dirname, 'dist');
 
 module.exports = merge(common, {
+  output: {
+    path: BUILD_DIR,
+    filename: 'bundle.[hash].js',
+    chunkFilename: '[name].[hash].chunk.js',
+    publicPath: '/',
+  },
   mode: 'development',
   devtool: 'source-map',
   module: {

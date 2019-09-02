@@ -18,6 +18,8 @@ const dislikePhotoFail = payload => ({
   payload,
 });
 
+const URL = process.env.URL;
+
 export const likePhoto = ({ photoId }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/photo/like/${photoId}`, {

@@ -21,3 +21,5 @@ export * from './storiesAction/editStory';
 export * from './storiesAction/fetchStories';
 export * from './storiesAction/publishStory';
 export * from './uploadImage';
+export * from './logout';
+export * from './refresh';

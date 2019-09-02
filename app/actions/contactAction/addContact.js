@@ -1,3 +1,5 @@
+const URL = process.env.URL;
+
 export const addContact = async body => {
   try {
     const response = await fetch(`${URL}/api/contact`, {

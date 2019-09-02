@@ -2,7 +2,7 @@ import Actions from '../actions';
 
 const photoReducer = (
   state = {
-    data: undefined,
+    data: {},
     error: undefined,
   },
   { type, payload },
@@ -17,7 +17,7 @@ const photoReducer = (
     case Actions.fetchPhotoFail:
       return {
         ...state,
-        data: undefined,
+        data: {},
         error: payload.error,
       };
     case Actions.likePhotoSuccess: {
@@ -25,7 +25,6 @@ const photoReducer = (
       data.isLiked = true;
       data.likes.total = data.likes.total + 1;
       return {
-        ...state,
         data,
         error: undefined,
       };
@@ -53,10 +52,10 @@ const photoReducer = (
     case Actions.addCommentSuccess: {
       const data = state.data;
       data.comments.total += 1;
-      data.comments.comment = state.data.comments.comment.push({
+      data.comments.comment.push({
         userId: payload.userId,
         name: payload.name,
-        commentId: payload.commentId,
+        _id: payload._id,
         body: payload.comment,
       });
       return {
@@ -72,14 +71,15 @@ const photoReducer = (
       };
     case Actions.editCommentSuccess: {
       const data = state.data;
-      data.comments.comment = state.data.comments.comment.map(comment => {
-        if (comment.commentId === payload.commentId)
+      data.comments.comment = data.comments.comment.map(comment => {
+        if (comment._id === payload.commentId)
           return {
             ...comment,
             body: payload.comment,
           };
         return comment;
       });
+
       return {
         ...state,
         data,
@@ -94,7 +94,7 @@ const photoReducer = (
     case Actions.deleteCommentSuccess: {
       const data = state.data;
       data.comments.total -= 1;
-      data.comments.comment = data.comments.comment.filter(comment => comment.commentId !== payload.commentId);
+      data.comments.comment = data.comments.comment.filter(comment => comment._id !== payload.commentId);
       return {
         ...state,
         data,

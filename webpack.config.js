@@ -8,11 +8,6 @@ const BUILD_DIR = path.resolve(__dirname, 'dist');
 
 module.exports = {
   entry: ['babel-polyfill', `${APP_DIR}/index.jsx`],
-  output: {
-    path: BUILD_DIR,
-    filename: 'bundle.[hash].js',
-    chunkFilename: '[name].[hash].chunk.js',
-  },
   module: {
     rules: [
       {

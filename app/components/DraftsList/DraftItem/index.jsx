@@ -9,12 +9,12 @@ class DraftItem extends React.Component {
     const { draft, deleteDrafts } = this.props;
 
     const handleRemoveDraft = () => {
-      deleteDrafts({ draftId: draft.id });
+      deleteDrafts({ draftId: draft._id });
     };
 
     return (
       <div>
-        <Link to={`/draft/${draft.id}`}>
+        <Link to={`/drafts/${draft._id}`}>
           <h2>{draft.title}</h2>
         </Link>
         <button onClick={handleRemoveDraft}>Remove</button>

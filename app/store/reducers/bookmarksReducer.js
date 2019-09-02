@@ -2,7 +2,7 @@ import Actions from '../actions';
 
 const bookmarkReducer = (
   state = {
-    data: undefined,
+    data: [],
     error: undefined,
   },
   { type, payload },
@@ -21,7 +21,7 @@ const bookmarkReducer = (
         error: payload.error,
       };
     case Actions.deleteBookmarksSuccess: {
-      const data = state.data.storyId.filter(id => id !== payload.storyId);
+      const data = state.data.filter(({ _id }) => _id !== payload.storyId);
       return {
         ...state,
         data,
@@ -33,6 +33,8 @@ const bookmarkReducer = (
         ...state,
         error: payload.error,
       };
+    default:
+      return state;
   }
 };
 

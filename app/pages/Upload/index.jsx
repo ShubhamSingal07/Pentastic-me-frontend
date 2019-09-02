@@ -1,44 +1,70 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
+import './style.scss';
 import * as Actions from '../../actions';
 import ImageUpload from '../../components/ImageUpload';
 
 class Upload extends React.Component {
   state = {
     loading: false,
-    images: [],
+    uploadLoading: false,
     error: '',
   };
 
-  handleImageChange = data => {
-    const { images } = this.state;
-    const arr = images;
-    arr.push(data);
-    this.setState({ images: arr });
-  };
+  async componentWillMount() {
+    const { refresh, loggedIn } = this.props;
+    this.setState({ loading: true });
+    await refresh({ loggedIn });
+    this.setState({ loading: false });
+  }
 
   handleImageUpload = async () => {
-    const { images } = this.state;
-    this.setState({ loading: true, error: undefined });
-    const data = await Actions.postPhotos(images);
-    if (data.error) return this.setState({ error: data.error, loading: false });
-    else {
-      this.setState({ loading: false, error: undefined });
-      return <Redirect to="/photos/page/0" />;
+    const { images } = this.props;
+    try {
+      this.setState({ uploadLoading: true, error: undefined });
+      const data = await Actions.postPhotos(images.data);
+      if (data.error) return this.setState({ error: data.error, uploadLoading: false });
+      else {
+        this.setState({ uploadLoading: false, error: undefined });
+        return this.props.history.push('/photos/page/0');
+      }
+    } catch (err) {
+      this.setState({ uploadLoading: false, error: 'oof' });
     }
   };
 
   render() {
-    const { images, error } = this.state;
+    const { loading, uploadLoading, error } = this.state;
+    const { images, loggedIn, role } = this.props;
+
+    if (loading) return <div className="upload-page">Loading</div>;
+
+    if (!loggedIn) return (window.location.href = process.env.OAUTH_URL);
+
+    if (role !== 'Admin') return <Redirect to="/" />;
+
     return (
-      <div>
+      <div className="upload-page">
         {error ? <div>{error}</div> : null}
-        <ImageUpload isPublishModal={false} imageChange={handleImageChange} />
-        {images.length > 0 ? <button onClick={this.handleImageUpload}>Upload</button> : null}
+        <ImageUpload isPublishModal={false} />
+        {images.data.length > 0 ? <button onClick={this.handleImageUpload}>Upload</button> : null}
       </div>
     );
   }
 }
 
-export default Upload;
+const mapStateToProps = ({ images, auth, user }) => ({
+  images,
+  loggedIn: auth.loggedIn,
+  role: user.data.role,
+});
+
+const mapDispatchToProps = dispatch => ({
+  refresh: payload => dispatch(Actions.refresh(payload)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Upload);

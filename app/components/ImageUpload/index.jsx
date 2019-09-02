@@ -1,43 +1,29 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import * as Actions from '../../actions';
 
 class ImageUpload extends React.Component {
   state = {
     uploadImage: true,
-    selectedFile: null,
-    imageLoading: false,
-    error: null,
-    images: [],
-  };
-
-  handleImageUpload = async () => {
-    const { imageChange } = this.props;
-    this.setState({ imageLoading: true });
-    const data = await Actions.uploadImage(selectedFile, selectedFile.name);
-    this.setState({ imageLoading: false });
-    if (data.error) this.setState({ error: data.error });
-    else {
-      const arr = images;
-      arr.push(data);
-      this.setState({ images: arr, uploadImage: false });
-      imageChange(data.secure_url);
-    }
+    loading: false,
   };
 
   handleFileSelector = async e => {
-    this.setState({ selectedFile: e.target.files[0] });
-    await handleImageUpload();
+    const { uploadImage } = this.props;
+    this.setState({ loading: true });
+    await uploadImage({ file: e.target.files[0], name: e.target.files[0].name });
+    this.setState({ loading: false, uploadImage: false });
   };
 
   render() {
-    const { uploadImage, selectedFile, uploadImage, error, images } = this.state;
-    const { isPublishModal } = this.props;
-
-    if (error) return <div>{error}</div>;
+    const { uploadImage, selectedFile, loading } = this.state;
+    const { isPublishModal, images } = this.props;
+    if (loading) return <div>Loading</div>;
 
     return (
       <div>
+        {images.error ? <div>{images.error}</div> : null}
         {isPublishModal ? (
           <div>
             {uploadImage ? (
@@ -55,15 +41,15 @@ class ImageUpload extends React.Component {
               </div>
             ) : (
               <div>
-                <img src={images[0].secure_url} />
+                <img src={images.data[0]} />
               </div>
             )}
           </div>
         ) : (
           <div>
-            {images.map(image => (
-              <div>
-                <img src={image.secure_url} />
+            {images.data.map(image => (
+              <div key={image.url}>
+                <img src={image.url} height="200px" />
               </div>
             ))}
             <div>
@@ -85,4 +71,15 @@ class ImageUpload extends React.Component {
   }
 }
 
-export default ImageUpload;
+const mapStateToProps = ({ images }) => ({
+  images,
+});
+
+const mapDispatchToProps = dispatch => ({
+  uploadImage: payload => dispatch(Actions.uploadImage(payload)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ImageUpload);

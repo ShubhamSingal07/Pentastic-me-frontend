@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import './style.scss';
 import * as Actions from '../../actions';
 import ReactQuillEditor from '../../components/ReactQuillEditor';
 
@@ -11,18 +12,12 @@ class Contact extends React.Component {
     readOnly: true,
     showSave: false,
   };
-  
-  componentDidMount() {
-    const { about } = this.state;
-    const { fetchContact } = this.props;
-    this.setState({
-      loading: true,
-    });
-    fetchContact();
-    this.setState({
-      loading: false,
-      aboutHtml: about.data,
-    });
+
+  async componentDidMount() {
+    const { fetchContact, loggedIn } = this.props;
+    this.setState({ loading: true });
+    const data = await fetchContact({ loggedIn });
+    this.setState({ loading: false, contactHtml: data });
   }
 
   handleContactChange = html => {
@@ -38,46 +33,44 @@ class Contact extends React.Component {
     });
   };
 
-  handleSaveClick = () => {
+  handleSaveClick = async () => {
     const { contactHtml } = this.state;
-    Actions.addAbout(contactHtml);
-    this.setState({
-      readOnly: true,
-      showSave: false,
-    });
+    await Actions.addContact(contactHtml);
+    this.setState({ readOnly: true, showSave: false });
   };
 
   render() {
     const { loading, readOnly, showSave, contactHtml } = this.state;
     const { contact, role } = this.props;
+
     if (loading) {
-      return <div>Loading</div>;
+      return <div className="contact-page">Loading</div>;
     }
-    if (contact.error) {
-      return <div>{contact.error}</div>;
-    }
+
     return (
-      <div>
-        <h1>Contact</h1>
+      <div className="contact-page">
+        <h2>Contact</h2>
+        {contact.error ? <div>{contact.error}</div> : null}
         {role === 'Admin' && !showSave ? (
           <div>
             <button onClick={this.handleEditClick}>Edit</button>
           </div>
         ) : null}
         {showSave ? <button onClick={this.handleSaveClick}>Save</button> : null}
-        <ReactQuillEditor readOnly={readOnly} value={contactHtml} handleChange={handleContactChange} />
+        <ReactQuillEditor readOnly={readOnly} value={contactHtml} handleChange={this.handleContactChange} />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ contact, user }) => ({
+const mapStateToProps = ({ contact, user, auth }) => ({
   contact,
   role: user.data.role,
+  loggedIn: auth.loggedIn,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchContact: () => dispatch(Actions.fetchContact()),
+  fetchContact: payload => dispatch(Actions.fetchContact(payload)),
 });
 
 export default connect(

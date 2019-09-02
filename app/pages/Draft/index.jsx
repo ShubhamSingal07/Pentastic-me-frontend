@@ -2,11 +2,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
+import './style.scss';
 import * as Actions from '../../actions';
 import PublishModal from '../../components/PublishModal';
 import DraftSaveModal from '../../components/DraftSaveModal';
 import ReactQuillEditor from '../../components/ReactQuillEditor';
-import { async } from 'q';
 
 class Draft extends React.Component {
   state = {
@@ -21,29 +21,29 @@ class Draft extends React.Component {
     showDraftModal: false,
   };
 
-  componentDidMount() {
-    const { match, fetchDraft, draft } = this.props;
+  async componentDidMount() {
+    const { match, fetchDraft, loggedIn } = this.props;
     const draftId = match.params.draftId;
     this.setState({ loading: true });
-    fetchDraft({ draftId });
-    this.setState({ loading: false, draftHtml: draft.data.body });
+    const data = await fetchDraft({ draftId, loggedIn });
+    this.setState({ loading: false, draftHtml: data.body });
   }
 
-  showDraftModal() {
+  showDraftModal = () => {
     this.setState({ showDraftModal: true });
-  }
+  };
 
-  hideDraftModal() {
+  hideDraftModal = () => {
     this.setState({ showDraftModal: false });
-  }
+  };
 
-  showPublishModal() {
+  showPublishModal = () => {
     this.setState({ showPublishModal: true });
-  }
+  };
 
-  hidePublishModal() {
+  hidePublishModal = () => {
     this.setState({ showPublishModal: false });
-  }
+  };
 
   handleDraftHtmlChange = html => {
     this.setState({
@@ -63,7 +63,7 @@ class Draft extends React.Component {
     const { title, draftHtml } = this.state;
     const { draft } = this.props;
     this.setState({ saveLoading: true, error: undefined, showDraftModal: false });
-    const data = await Actions.addDraft(title, draftHtml, draft.id);
+    const data = await Actions.addDraft(title, draftHtml, draft.data._id);
     if (data.error) this.setState({ saveLoading: false, error: data.error });
     else this.setState({ saveLoading: false, error: undefined });
   };
@@ -72,7 +72,7 @@ class Draft extends React.Component {
     const { title, draftHtml, image } = this.state;
     const { draft } = this.props;
     this.setState({ publishloading: true, error: undefined, showPublishModal: false });
-    const data = await Actions.publishDraft(draft.id, title, draftHtml, image);
+    const data = await Actions.publishDraft(draft.data._id, title, draftHtml, image);
     if (data.error) this.setState({ publishloading: false, error: data.error });
     else {
       this.setState({ publishLoading: false, error: undefined });
@@ -81,44 +81,46 @@ class Draft extends React.Component {
   };
 
   render() {
-    const { draftHtml, loading, error, showDraftModal, showPublishModal } = this.state;
+    const { draftHtml, loading, error, showDraftModal, showPublishModal, title } = this.state;
     const { draft } = this.props;
 
-    if (loading) return <div>Loading</div>;
+    if (loading) return <div className="draft-page">Loading</div>;
 
-    if (draft.error) return <div>{draft.error}</div>;
+    if (draft.error) return <div className="draft-page">{draft.error}</div>;
 
-    if (error) return <div>{error}</div>;
+    if (error) return <div className="draft-page">{error}</div>;
 
     return (
-      <div>
+      <div className="draft-page">
         <div>
           <button onClick={this.showDraftModal}>Save</button>
           <button onClick={this.showPublishModal}>Publish</button>
         </div>
-        {showDraftModal ? (
-          <DraftSaveModal
-            titleChange={this.handleTitleChange}
-            handleClick={this.handleSaveClick}
-            hideModal={this.hideDraftModal}
-          />
-        ) : null}
-        {showPublishModal ? (
-          <PublishModal
-            titleChange={this.handleTitleChange}
-            imageChange={this.handleImageChange}
-            handleClick={this.handlePublishClick}
-            hideModal={this.hidePublishModal}
-          />
-        ) : null}
+        <DraftSaveModal
+          titleChange={this.handleTitleChange}
+          handleClick={this.handleSaveClick}
+          hideModal={this.hideDraftModal}
+          show={showDraftModal}
+          title={title}
+        />
+
+        <PublishModal
+          titleChange={this.handleTitleChange}
+          imageChange={this.handleImageChange}
+          handleClick={this.handlePublishClick}
+          hideModal={this.hidePublishModal}
+          title={title}
+          show={showPublishModal}
+        />
         <ReactQuillEditor readOnly={false} value={draftHtml} handleChange={this.handleDraftHtmlChange} />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ draft }) => ({
+const mapStateToProps = ({ draft, auth }) => ({
   draft,
+  loggedIn: auth.loggedIn,
 });
 
 const mapDispatchToProps = dispatch => ({

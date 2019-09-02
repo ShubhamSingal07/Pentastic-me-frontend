@@ -8,11 +8,11 @@
   user-select: none;
 }
 
-.hamRotate.active {
+.hamRotate.open {
   transform: rotate(45deg);
 }
 
-.hamRotate180.active {
+.hamRotate180.open {
   transform: rotate(180deg);
 }
 
@@ -37,13 +37,13 @@
   transform-origin: 50%;
   transition: transform 400ms, stroke-dashoffset 400ms;
 }
-.ham8.active .top {
+.ham8.open .top {
   stroke-dashoffset: -64px;
 }
-.ham8.active .middle {
+.ham8.open .middle {
   //stroke-dashoffset: -20px;
   transform: rotate(90deg);
 }
-.ham8.active .bottom {
+.ham8.open .bottom {
   stroke-dashoffset: -64px;
 }

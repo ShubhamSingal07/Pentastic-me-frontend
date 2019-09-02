@@ -11,7 +11,7 @@ const addBookmarkFail = payload => ({
 
 const URL = process.env.URL;
 
-export const addToBookmark = storyId => async dispatch => {
+export const addToBookmark = ({ storyId }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/bookmark`, {
       method: 'POST',

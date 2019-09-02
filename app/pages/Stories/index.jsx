@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Navbar from '../../components/Navbar';
+import './style.scss';
 import StoriesList from '../../components/StoriesList';
 import * as Actions from '../../actions';
 
@@ -10,11 +10,11 @@ class Stories extends React.Component {
     loading: false,
   };
 
-  componentDidMount() {
-    const { fetchStories, match } = this.props;
+  async componentDidMount() {
+    const { fetchStories, match, loggedIn } = this.props;
     const page = match.params.pageNo;
     this.setState({ loading: true });
-    fetchStories({ page, loggedIn });
+    await fetchStories({ page, loggedIn });
     this.setState({ loading: false });
   }
 
@@ -24,8 +24,7 @@ class Stories extends React.Component {
     if (loading) return <div>Loading</div>;
     if (stories.error) return <div>{stories.error}</div>;
     return (
-      <div>
-        <Navbar />
+      <div className="stories-page">
         <StoriesList stories={stories.data} />
       </div>
     );

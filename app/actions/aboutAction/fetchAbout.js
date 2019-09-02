@@ -12,16 +12,19 @@ const fetchAboutFail = payload => ({
 
 const URL = process.env.URL;
 
-export const fetchAbout = () => async dispatch => {
+export const fetchAbout = ({ loggedIn }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/about`, {
       headers: {
-        Auhtorization: `Token ${localStorage.jwt}`,
+        Authorization: `Token ${localStorage.jwt}`,
       },
     });
     const data = await response.json();
     if (response.status === 200) {
-      return dispatch(fetchAboutSuccess(data));
+      data.loggedIn = data.user ? true : false;
+      data.reset = data.loggedIn === loggedIn ? false : true;
+      dispatch(fetchAboutSuccess(data));
+      return data.about.about;
     }
     return dispatch(fetchAboutFail(data));
   } catch (err) {

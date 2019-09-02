@@ -1,6 +1,7 @@
 import React from 'react';
-import { connect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
+import './style.scss';
 import * as Actions from '../../actions';
 import PhotoContainer from '../../containers/PhotoContainer';
 
@@ -9,11 +10,11 @@ class Photo extends React.Component {
     loading: false,
   };
 
-  componentDidMount() {
+  async componentWillMount() {
     const { match, fetchPhoto, loggedIn } = this.props;
     const photoId = match.params.photoId;
     this.setState({ loading: true });
-    fetchPhoto({ photoId, loggedIn });
+    await fetchPhoto({ photoId, loggedIn });
     this.setState({ loading: false });
   }
 
@@ -21,11 +22,15 @@ class Photo extends React.Component {
     const { loading } = this.state;
     const { photo } = this.props;
 
-    if (loading) return <div>Loading</div>;
+    if (loading) return <div className="photo-page">Loading</div>;
 
-    if (photo.error) return <div>{photo.error}</div>;
+    if (photo.error) return <div className="photo-page">{photo.error}</div>;
 
-    return <PhotoContainer photo={photo.data} />;
+    return (
+      <div className="photo-page">
+        <PhotoContainer />
+      </div>
+    );
   }
 }
 

@@ -8,21 +8,21 @@ class CommentItem extends React.Component {
     editLoading: false,
     deleteLoading: false,
     editComment: false,
-    commentInput: this.props.comment.body,
+    commentInput: '',
   };
 
   handleSaveEditedComment = () => {
     const { commentInput } = this.state;
-    const { photoId, editComment } = this.props;
+    const { photoId, editComment, comment } = this.props;
     this.setState({ editLoading: true });
-    editComment({ photoId, commentId: comment.Id, comment: commentInput });
+    editComment({ photoId, commentId: comment._id, comment: commentInput });
     this.setState({ editLoading: false, editComment: false });
   };
 
   handleDeleteComment = () => {
-    const { deleteComment, photoId } = this.props;
+    const { deleteComment, photoId, comment } = this.props;
     this.setState({ deleteLoading: true });
-    deleteComment({ photoId, commentId: comment.id });
+    deleteComment({ photoId, commentId: comment._id });
     this.setState({ deleteLoading: false });
   };
 
@@ -35,24 +35,23 @@ class CommentItem extends React.Component {
   render() {
     const { editLoading, deleteLoading, commentInput, editComment } = this.state;
     const { userId, comment } = this.props;
-
     return (
       <div>
         <div>
-          <span>{comment.name}</span>
-          <span>{comment.body}</span>
+          <span>{comment.name} </span>
+          <span> {comment.body}</span>
         </div>
         {userId === comment.userId ? (
           <div>
             {!editComment ? (
-              <span onClick={() => this.setState({ editComment: true })}>Edit</span>
+              <button onClick={() => this.setState({ editComment: true })}>Edit</button>
             ) : (
               <div>
                 <input type="text" value={commentInput} onChange={this.handleValueChange} placeholder="Add a comment" />
-                <span onClick={this.handleSaveEditedComment}>Save</span>
+                <button onClick={this.handleSaveEditedComment}>Save</button>
               </div>
             )}
-            <span onClick={this.handleDeleteComment}>Delete</span>
+            <button onClick={this.handleDeleteComment}>Delete</button>
           </div>
         ) : null}
       </div>
@@ -61,8 +60,8 @@ class CommentItem extends React.Component {
 }
 
 const mapStateToProps = ({ user, photo }) => ({
-  userId: user.data.id,
-  photoId: photo.data.id,
+  userId: user.data._id,
+  photoId: photo.data._id,
 });
 
 const mapDispatchToProps = dispatch => ({

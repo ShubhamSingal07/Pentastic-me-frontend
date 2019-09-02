@@ -1,6 +1,18 @@
+import Actions from '../store/actions';
+
+const uploadImageSuccess = payload => ({
+  type: Actions.uploadImageSuccess,
+  payload,
+});
+
+const uploadImageFail = payload => ({
+  type: Actions.uploadImageFail,
+  payload,
+});
+
 const URL = process.env.URL;
 
-export const uploadImage = async (file, name) => {
+export const uploadImage = ({ file, name }) => async dispatch => {
   try {
     const fd = new FormData();
     fd.append('image', file, name);
@@ -8,14 +20,19 @@ export const uploadImage = async (file, name) => {
       method: 'POST',
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: { file: fd },
+      body: fd,
     });
-    return await response.json();
+    const data = await response.json();
+    if (response.status === 200) {
+      return dispatch(uploadImageSuccess(data));
+    }
+    return dispatch(uploadImageFail(data));
   } catch (err) {
-    return {
-      error: 'Oops! Looks like something went wrong',
-    };
+    return dispatch(
+      uploadImageFail({
+        error: 'Oops! Looks like something went wrong',
+      }),
+    );
   }
 };

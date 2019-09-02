@@ -2,7 +2,7 @@ import Actions from '../actions';
 
 const storyReducer = (
   state = {
-    data: undefined,
+    data: {},
     error: undefined,
   },
   { type, payload },
@@ -17,7 +17,7 @@ const storyReducer = (
     case Actions.fetchStoryFail:
       return {
         ...state,
-        data: undefined,
+        data: {},
         error: payload.error,
       };
     case Actions.clapStorySuccess: {

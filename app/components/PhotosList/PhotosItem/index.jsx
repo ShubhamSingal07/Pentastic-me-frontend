@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Carousel } from 'react-bootstrap';
 import { connect } from 'react-redux';
 
 import * as Actions from '../../../actions';
+
+const OAUTH_URL = process.env.OAUTH_URL;
 
 class PhotosItem extends React.Component {
   state = {
@@ -11,44 +12,48 @@ class PhotosItem extends React.Component {
   };
 
   handleLike = () => {
-    const { likePhotos, photo } = this.props;
+    const { likePhotos, photo, loggedIn } = this.props;
+    if (!loggedIn) return (window.location.href = OAUTH_URL);
     this.setState({ likeLoading: true });
-    likePhotos({ photoId: photo.id });
+    likePhotos({ photoId: photo._id });
     this.setState({ likeLoading: false });
   };
 
   handleDislike = () => {
-    const { dislikePhotos, photo } = this.props;
+    const { dislikePhotos, photo, loggedIn } = this.props;
+    if (!loggedIn) return (window.location.href = OAUTH_URL);
     this.setState({ likeLoading: true });
-    dislikePhotos({ photoId: photo.id });
+    dislikePhotos({ photoId: photo._id });
     this.setState({ likeLoading: false });
   };
 
   render() {
     const { likeLoading } = this.state;
     const { photo } = this.props;
-
     return (
       <div>
-        <Link to={`/photos/${photo.id}`}>
+        <Link to={`/photos/${photo._id}`}>
           {photo.url.length == 1 ? (
-            <img src={photo.url[0]} />
+            <img src={photo.url[0].url} />
           ) : (
-            <Carousel>
-              {photo.url.map(url => (
-                <PhotoCarousel url={url} />
-              ))}
-            </Carousel>
+            <div>
+              <img src={photo.url[0].url} />
+              <div>Collection</div>
+            </div>
           )}
         </Link>
         <div>
-          {photo.isLiked ? <span onClick={this.handleLike}>Like</span> : <span onClick={this.handleDislike}>Dislike</span>}
-          <Link to={`/photos/${photo.id}`}>Comment</Link>
+          {photo.likes}
+          {photo.isLiked ? (
+            <button onClick={this.handleDislike}>Dislike</button>
+          ) : (
+            <button onClick={this.handleLike}>Like</button>
+          )}
+          <Link to={`/photos/${photo._id}`}>Comment</Link>
         </div>
-        {photo.comments.total > 0 ? (
-          <Link to={`/photos/${photo.id}`}>
-            View {photo.comments.total == 1 ? null : 'all'} {photo.comments.total}{' '}
-            {photo.comments.total == 1 ? 'comment' : 'comments'}
+        {photo.comments > 0 ? (
+          <Link to={`/photos/${photo._id}`}>
+            View {photo.comments == 1 ? null : 'all'} {photo.comments} {photo.comments == 1 ? 'comment' : 'comments'}
           </Link>
         ) : null}
       </div>
@@ -56,12 +61,16 @@ class PhotosItem extends React.Component {
   }
 }
 
+const mapStateToProps = ({ auth }) => ({
+  loggedIn: auth.loggedIn,
+});
+
 const mapDispatchToProps = dispatch => ({
   likePhotos: payload => dispatch(Actions.likePhotos(payload)),
   dislikePhotos: payload => dispatch(Actions.dislikePhotos(payload)),
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(PhotosItem);

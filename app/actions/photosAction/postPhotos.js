@@ -6,6 +6,7 @@ export const postPhotos = async url => {
       method: 'POST',
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ url }),
     });

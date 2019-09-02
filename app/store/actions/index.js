@@ -49,4 +49,9 @@ export default keymirror({
   fetchContactFail: null,
   fetchPhotoSuccess: null,
   fetchPhotoFail: null,
+  uploadImageSuccess: null,
+  uploadImageFail: null,
+  logout: null,
+  refreshSuccess: null,
+  refreshFail: null,
 });

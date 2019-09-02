@@ -34,10 +34,11 @@ const photosReducer = (
       };
     case Actions.likePhotosSuccess: {
       const data = state.data.map(photo => {
-        if (photo.id === payload.photoId) {
+        if (photo._id === payload.photoId) {
           return {
             ...photo,
             isLiked: true,
+            likes: photo.likes + 1,
           };
         }
         return photo;
@@ -55,10 +56,11 @@ const photosReducer = (
       };
     case Actions.dislikePhotosSuccess: {
       const data = state.data.map(photo => {
-        if (photo.id === payload.photoId) {
+        if (photo._id === payload.photoId) {
           return {
             ...photo,
             isLiked: false,
+            likes: photo.likes - 1,
           };
         }
         return photo;

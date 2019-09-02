@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import './style.scss';
 import * as Actions from '../../actions';
-import Navbar from '../../components/Navbar';
 import DraftsList from '../../components/DraftsList';
 
 class Drafts extends React.Component {
@@ -10,10 +10,10 @@ class Drafts extends React.Component {
     loading: false,
   };
 
-  componentDidMount() {
-    const { fetchDrafts } = this.props;
+  async componentDidMount() {
+    const { fetchDrafts, loggedIn } = this.props;
     this.setState({ loading: true });
-    fetchDrafts();
+    await fetchDrafts({ loggedIn });
     this.setState({ loading: false });
   }
 
@@ -21,25 +21,26 @@ class Drafts extends React.Component {
     const { loading } = this.state;
     const { drafts } = this.props;
 
-    if (loading) return <div>Loading</div>;
+    if (loading) return <div className="drafts-page">Loading</div>;
 
-    if (drafts.error) return <div>{drafts.error}</div>;
+    if (drafts.error) return <div className="drafts-page">{drafts.error}</div>;
 
     return (
-      <div>
-        <Navbar />
+      <div className="drafts-page">
+        <h2>Drafts</h2>
         <DraftsList drafts={drafts.data} />
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ drafts }) => ({
+const mapStateToProps = ({ drafts, auth }) => ({
   drafts,
+  loggedIn: auth.loggedIn,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchDrafts: () => dispatch(Actions.fetchDrafts()),
+  fetchDrafts: payload => dispatch(Actions.fetchDrafts(payload)),
 });
 
 export default connect(

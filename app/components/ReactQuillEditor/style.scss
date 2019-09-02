@@ -1,9 +1,5 @@
 @import 'variables.scss';
 
-// .quill {
-//   position: relative;
-// }
-
 .ql-toolbar {
   position: sticky;
   top: 48px;
@@ -35,7 +31,6 @@
   margin: 0 auto;
   width: 95%;
   max-width: 700px;
-  // border-bottom: none !important;
 }
 
 .ql-snow .ql-editor pre.ql-syntax {
@@ -44,11 +39,18 @@
 }
 
 #counter {
-  // border: 1px solid #ccc;
-  // border-top: none;
   margin: 0 auto;
   width: 95%;
   max-width: 700px;
   color: #ccc;
   text-align: right;
+}
+
+.ql-toolbar.readOnly {
+  display: none;
+}
+
+.readOnly .ql-disabled {
+  margin-top: 70px;
+  border: none !important;
 }

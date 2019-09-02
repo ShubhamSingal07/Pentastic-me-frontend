@@ -2,7 +2,7 @@ import Actions from '../../store/actions';
 
 const draftReducer = (
   state = {
-    data: undefined,
+    data: {},
     error: undefined,
   },
   { type, payload },
@@ -17,9 +17,11 @@ const draftReducer = (
     case Actions.fetchDraftFail:
       return {
         ...state,
-        data: undefined,
+        data: {},
         error: payload.error,
       };
+    default:
+      return state;
   }
 };
 

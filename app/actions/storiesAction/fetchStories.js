@@ -6,7 +6,7 @@ const fetchStoriesSuccess = payload => ({
 });
 
 const fetchStoriesFail = payload => ({
-  type: Actions.fetchStoriesSuccess,
+  type: Actions.fetchStoriesFail,
   payload,
 });
 
@@ -53,15 +53,18 @@ export const fetchStory = ({ storyId, loggedIn }) => async dispatch => {
       },
     });
     const data = await response.json();
-    if ((response.status = 200)) {
+    if (response.status === 200) {
       data.loggedIn = data.user ? true : false;
       data.reset = data.loggedIn === loggedIn ? false : true;
-      return dispatch(fetchStorySuccess(data));
+      dispatch(fetchStorySuccess(data));
+      return data.story.body;
     }
     return dispatch(fetchStoryFail(data));
   } catch (err) {
-    return dispatch({
-      error: 'Oops! Looks like something went wrong',
-    });
+    return dispatch(
+      fetchStoryFail({
+        error: 'Oops! Looks like something went wrong',
+      }),
+    );
   }
 };

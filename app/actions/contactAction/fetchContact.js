@@ -12,16 +12,19 @@ const fetchContactFail = payload => ({
 
 const URL = process.env.URL;
 
-export const fetchContact = () => async dispatch => {
+export const fetchContact = ({ loggedIn }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/contact`, {
       headers: {
-        Auhtorization: `Token ${localStorage.jwt}`,
+        Authorization: `Token ${localStorage.jwt}`,
       },
     });
     const data = await response.json();
     if (response.status === 200) {
-      return dispatch(fetchContactSuccess(data));
+      data.loggedIn = data.user ? true : false;
+      data.reset = data.loggedIn === loggedIn ? false : true;
+      dispatch(fetchContactSuccess(data));
+      return data.contact.contact;
     }
     return fetchContactFail(data);
   } catch (err) {

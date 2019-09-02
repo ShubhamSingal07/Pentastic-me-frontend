@@ -2,17 +2,7 @@ import React from 'react';
 
 import './style.scss';
 
-const Hamburger = () => {
-  const [className, setClassName] = React.useState('');
-
-  const classnameToggler = () => {
-    if (className === '') {
-      setClassName('active');
-    } else {
-      setClassName('');
-    }
-  };
-
+const Hamburger = ({ classnameToggler, className }) => {
   return (
     <svg className={`ham hamRotate ham8 ${className}`} viewBox="0 0 100 100" width="40" onClick={classnameToggler}>
       <path

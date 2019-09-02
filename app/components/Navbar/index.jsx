@@ -1,121 +1,198 @@
 import React from 'react';
-
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
+import * as Actions from '../../actions';
 import Hamburger from '../Hamburger';
 
 import './style.scss';
 
-const NavbarComponent = () => {
-  const [className, setClassName] = React.useState('');
+class NavbarComponent extends React.Component {
+  state = {
+    className: '',
+  };
 
-  const navToggler = () => {
+  navToggler = () => {
+    const { className } = this.state;
     if (className === '') {
-      setClassName('open');
+      this.setState({ className: 'open' });
     } else {
-      setClassName('');
+      this.setState({ className: '' });
     }
   };
 
-  return (
-    <React.Fragment>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark justify-content-sm-start fixed-top p-1 pl-2">
-        <Link className="navbar-brand" to="/">
-          PentasticMe
-        </Link>
-        <button className="navbar-toggler align-self-start ml-auto p-0" type="button" onClick={navToggler}>
-          <Hamburger />
-        </button>
-        <div
-          className={`collapse navbar-collapse bg-dark p-3 p-lg-0 mt-lg-0 d-flex flex-column flex-lg-row flex-xl-row justify-content-lg-end mobileMenu ${className}`}
-          id="navbarSupportedContent">
-          <ul className="navbar-nav align-self-stretch">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">
-                Home
-              </Link>
-            </li>
+  handleLogin = () => {
+    return (window.location.href = 'http://localhost:5000');
+  };
 
-            <li className="nav-item">
-              <Link className="nav-link" to="/stories">
-                Stories
-              </Link>
-            </li>
+  handleLogout = () => {
+    const { logout } = this.props;
+    logout();
+    return (window.location.href = 'http://localhost:5000/logout');
+  };
 
-            <li className="nav-item">
-              <Link className="nav-link" to="/photos">
-                Photos
-              </Link>
-            </li>
+  render() {
+    const { className } = this.state;
+    const { loggedIn, role, user } = this.props;
+    console.log('in navbar component', user);
+    return (
+      <React.Fragment>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark justify-content-sm-start fixed-top p-1 pl-2">
+          <Link className="navbar-brand" to="/">
+            PentasticMe
+          </Link>
+          <button className="navbar-toggler align-self-start ml-auto p-0" type="button" onClick={this.navToggler}>
+            <Hamburger classnameToggler={this.navToggler} className={className} />
+          </button>
+          <div
+            className={`collapse navbar-collapse bg-dark p-3 p-lg-0 mt-lg-0 d-flex flex-column flex-lg-row flex-xl-row justify-content-lg-end mobileMenu ${className}`}
+            id="navbarSupportedContent">
+            <ul className="navbar-nav align-self-stretch">
+              <li className="nav-item">
+                <Link className="nav-link" to="/">
+                  Home
+                </Link>
+              </li>
 
-            <li className="nav-item dropdown" id="desktopOnly">
-              <DropdownButton alignRight title="Menu">
-                <Dropdown.Item>
-                  <Link className="dropdown-link" to="/drafts">
+              <li className="nav-item">
+                <Link className="nav-link" to="/stories/page/0">
+                  Stories
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link className="nav-link" to="/photos/page/0">
+                  Photos
+                </Link>
+              </li>
+
+              <li className="nav-item dropdown" id="desktopOnly">
+                <DropdownButton alignRight title="Menu">
+                  {role === 'Admin' ? (
+                    <Dropdown.Item as="div">
+                      <Link className="dropdown-link" to="/drafts">
+                        Drafts
+                      </Link>
+                    </Dropdown.Item>
+                  ) : null}
+                  <Dropdown.Item as="div">
+                    <Link className="dropdown-link" to="/bookmarks">
+                      Bookmarks
+                    </Link>
+                  </Dropdown.Item>
+                  {role === 'Admin' ? (
+                    <Dropdown.Item as="div">
+                      <Link className="dropdown-link" to="/stories/write">
+                        Write
+                      </Link>
+                    </Dropdown.Item>
+                  ) : null}
+                  {role === 'Admin' ? (
+                    <Dropdown.Item as="div">
+                      <Link className="dropdown-link" to="/photos/upload">
+                        Upload
+                      </Link>
+                    </Dropdown.Item>
+                  ) : null}
+                  <Dropdown.Item as="div">
+                    <Link className="dropdown-link" to="/about">
+                      About
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item as="div">
+                    <Link className="dropdown-link" to="/contact">
+                      Contact
+                    </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item as="div">
+                    {loggedIn ? (
+                      <button className="dropdown-link" onClick={this.handleLogout}>
+                        Sign out
+                      </button>
+                    ) : (
+                      <button className="dropdown-link" onClick={this.handleLogin}>
+                        Login
+                      </button>
+                    )}
+                  </Dropdown.Item>
+                </DropdownButton>
+              </li>
+
+              {role === 'Admin' ? (
+                <li className="nav-item mobileOnly">
+                  <Link className="nav-link" to="/drafts">
                     Drafts
                   </Link>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <Link className="dropdown-link" to="/favourites">
-                    Favourites
+                </li>
+              ) : null}
+
+              <li className="nav-item mobileOnly">
+                <Link className="nav-link" to="/bookmarks">
+                  Bookmarks
+                </Link>
+              </li>
+
+              {role === 'Admin' ? (
+                <li className="nav-item mobileOnly">
+                  <Link className="nav-link" to="/stories/write">
+                    Write
                   </Link>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <Link className="dropdown-link" to="/about">
-                    About
+                </li>
+              ) : null}
+
+              {role === 'Admin' ? (
+                <li className="nav-item mobileOnly">
+                  <Link className="nav-link" to="/photos/upload">
+                    Upload
                   </Link>
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  <Link className="dropdown-link" to="/contact">
-                    Contact
-                  </Link>
-                </Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Item>
-                  <Link className="dropdown-link" to="/logout">
+                </li>
+              ) : null}
+
+              <li className="nav-item mobileOnly">
+                <Link className="nav-link" to="/about">
+                  About
+                </Link>
+              </li>
+
+              <li className="nav-item mobileOnly">
+                <Link className="nav-link" to="/contact">
+                  Contact
+                </Link>
+              </li>
+              <li className="nav-item mobileOnly">
+                {loggedIn ? (
+                  <button className="nav-link" onClick={this.handleLogout}>
                     Sign out
-                  </Link>
-                </Dropdown.Item>
-              </DropdownButton>
-            </li>
+                  </button>
+                ) : (
+                  <button className="nav-link" onClick={this.handleLogin}>
+                    Login
+                  </button>
+                )}
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <div className={`overlay ${className}`} onClick={this.navToggler} />
+      </React.Fragment>
+    );
+  }
+}
 
-            <li className="nav-item mobileOnly">
-              <Link className="nav-link" to="/drafts">
-                Drafts
-              </Link>
-            </li>
+const mapStateToProps = ({ auth, user }) => ({
+  loggedIn: auth.loggedIn,
+  role: user.data.role,
+  user,
+});
 
-            <li className="nav-item mobileOnly">
-              <Link className="nav-link" to="/favourites">
-                Favourites
-              </Link>
-            </li>
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(Actions.logout()),
+});
 
-            <li className="nav-item mobileOnly">
-              <Link className="nav-link" to="/about">
-                About
-              </Link>
-            </li>
-
-            <li className="nav-item mobileOnly">
-              <Link className="nav-link" to="/contact">
-                Contact
-              </Link>
-            </li>
-
-            <li className="nav-item mobileOnly">
-              <Link className="nav-link" to="/logout">
-                Sign out
-              </Link>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      <div className={`overlay ${className}`} onClick={navToggler} />
-    </React.Fragment>
-  );
-};
-
-export default NavbarComponent;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(NavbarComponent);

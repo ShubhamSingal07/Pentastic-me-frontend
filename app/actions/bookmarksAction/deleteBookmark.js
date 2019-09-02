@@ -21,9 +21,9 @@ const deleteBookmarkFail = payload => ({
 
 const URL = process.env.URL;
 
-export const deleteBookmark = async storyId => {
+export const deleteBookmark = ({ storyId }) => async dispatch => {
   try {
-    const response = await fetch(`${URL}/api/draft/${storyId}`, {
+    const response = await fetch(`${URL}/api/bookmark/${storyId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
@@ -43,9 +43,9 @@ export const deleteBookmark = async storyId => {
   }
 };
 
-export const deleteBookmarks = storyId => async dispatch => {
+export const deleteBookmarks = ({ storyId }) => async dispatch => {
   try {
-    const response = await fetch(`${URL}/api/draft/${storyId}`, {
+    const response = await fetch(`${URL}/api/bookmark/${storyId}`, {
       method: 'DELETE',
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
@@ -57,6 +57,7 @@ export const deleteBookmarks = storyId => async dispatch => {
     }
     return dispatch(deleteBookmarksFail(data));
   } catch (err) {
+    console.log(err);
     return dispatch(
       deleteBookmarksFail({
         error: 'Oops! Looks like something went wrong',

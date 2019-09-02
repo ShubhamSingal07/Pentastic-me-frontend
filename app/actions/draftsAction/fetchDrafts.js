@@ -22,7 +22,7 @@ const fetchDraftFail = payload => ({
 
 const URL = process.env.URL;
 
-export const fetchDrafts = () => async dispatch => {
+export const fetchDrafts = ({ loggedIn }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/draft`, {
       headers: {
@@ -31,10 +31,13 @@ export const fetchDrafts = () => async dispatch => {
     });
     const data = await response.json();
     if (response.status === 200) {
+      data.loggedIn = data.user ? true : false;
+      data.reset = loggedIn === data.loggedIn ? false : true;
       return dispatch(fetchDraftsSuccess(data));
     }
     return dispatch(fetchDraftsFail(data));
   } catch (err) {
+    console.log('fetchDrafts action', err);
     return dispatch(
       fetchDraftsFail({
         error: 'Oops! Looks like something went wrong',
@@ -43,7 +46,7 @@ export const fetchDrafts = () => async dispatch => {
   }
 };
 
-export const fetchDraft = ({ draftId }) => async dispatch => {
+export const fetchDraft = ({ draftId, loggedIn }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/draft?draftId=${draftId}`, {
       headers: {
@@ -52,12 +55,14 @@ export const fetchDraft = ({ draftId }) => async dispatch => {
     });
     const data = await response.json();
     if (response.status === 200) {
-      data.loggedIn = date.user ? true : false;
+      data.loggedIn = data.user ? true : false;
       data.reset = data.loggedIn === loggedIn ? false : true;
-      return dispatch(fetchDraftSuccess(data));
+      dispatch(fetchDraftSuccess(data));
+      return data.draft;
     }
     return dispatch(fetchDraftFail(data));
-  } catch {
+  } catch (err) {
+    console.log('fetchDraft action', err);
     return dispatch(
       fetchDraftFail({
         error: 'Oops! Looks like something went wrong',

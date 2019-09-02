@@ -1,3 +1,5 @@
+const URL = process.env.URL;
+
 export const addAbout = async body => {
   try {
     const response = await fetch(`${URL}/api/about`, {

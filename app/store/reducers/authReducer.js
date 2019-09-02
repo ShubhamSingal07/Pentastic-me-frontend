@@ -60,6 +60,42 @@ const authReducer = (
         };
       return state;
     }
+    case Actions.fetchDraftSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.fetchDraftsSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.fetchBookmarksSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.refreshSuccess: {
+      if (payload.reset)
+        return {
+          loggedIn: payload.loggedIn,
+        };
+      return state;
+    }
+    case Actions.refreshFail:
+      return {
+        loggedIn: false,
+      };
+    case Actions.logoutSuccess:
+      return {
+        loggedIn: false,
+      };
     default:
       return state;
   }

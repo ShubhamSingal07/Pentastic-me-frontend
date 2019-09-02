@@ -10,7 +10,7 @@ const PhotosList = ({ photos }) => (
     ) : (
       <div>
         {photos.map(photo => (
-          <PhotosItem photo={photo} key={photo.id} />
+          <PhotosItem photo={photo} key={photo._id} />
         ))}
       </div>
     )}

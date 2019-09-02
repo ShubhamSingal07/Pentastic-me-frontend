@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import './style.scss';
 import * as Actions from '../../actions';
-import Navbar from '../../components/Navbar';
 import StoriesList from '../../components/StoriesList';
 
 class Bookmarks extends React.Component {
@@ -10,10 +10,10 @@ class Bookmarks extends React.Component {
     loading: false,
   };
 
-  componentDidMount() {
-    const { fetchBookmarks } = this.props;
+  async componentDidMount() {
+    const { fetchBookmarks, loggedIn } = this.props;
     this.setState({ loading: true });
-    fetchBookmarks();
+    await fetchBookmarks({ loggedIn });
     this.setState({ loading: false });
   }
 
@@ -21,25 +21,28 @@ class Bookmarks extends React.Component {
     const { loading } = this.state;
     const { bookmarks } = this.props;
 
-    if (loading) return <div>Loading</div>;
-
-    if (bookmarks.error) return <div>{bookmarks.error}</div>;
-
     return (
-      <div>
-        <Navbar />
-        <StoriesList stories={bookmarks.data} bookmarkPage={true} />
+      <div className="bookmarks-page">
+        <h2>Bookmarks</h2>
+        {loading ? (
+          <div>Loading</div>
+        ) : bookmarks.error ? (
+          <div>{bookmarks.error}</div>
+        ) : (
+          <StoriesList stories={bookmarks.data} bookmarkPage={true} />
+        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = ({ bookmarks }) => ({
+const mapStateToProps = ({ bookmarks, auth }) => ({
   bookmarks,
+  loggedIn: auth.loggedIn,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchBookmarks: () => dispatch(Actions.fetchBookmarks()),
+  fetchBookmarks: payload => dispatch(Actions.fetchBookmarks(payload)),
 });
 
 export default connect(

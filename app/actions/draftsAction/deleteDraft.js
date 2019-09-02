@@ -14,8 +14,9 @@ const URL = process.env.URL;
 
 export const deleteDrafts = ({ draftId }) => async dispatch => {
   try {
+    console.log('in delete draft actions');
     const response = await fetch(`${URL}/api/draft/${draftId}`, {
-      method: 'PATCH',
+      method: 'DELETE',
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
       },

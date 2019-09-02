@@ -2,7 +2,7 @@ import Actions from '../actions';
 
 const aboutReducer = (
   state = {
-    data: undefined,
+    data: '',
     error: undefined,
   },
   { type, payload },
@@ -17,7 +17,7 @@ const aboutReducer = (
     case Actions.fetchAboutFail:
       return {
         ...state,
-        data: undefined,
+        data: '',
         error: payload.error,
       };
     default:

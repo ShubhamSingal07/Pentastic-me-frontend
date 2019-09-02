@@ -2,7 +2,7 @@ import Actions from '../actions';
 
 const draftsReducer = (
   state = {
-    data: undefined,
+    data: [],
     error: undefined,
   },
   { type, payload },
@@ -17,11 +17,11 @@ const draftsReducer = (
     case Actions.fetchDraftsFail:
       return {
         ...state,
-        data: undefined,
+        data: [],
         error: payload.error,
       };
     case Actions.deleteDraftsSuccess: {
-      const data = state.data.filter(draft => draft.id === draftId);
+      const data = state.data.filter(draft => draft._id !== payload.draftId);
       return {
         ...state,
         data,
@@ -33,6 +33,8 @@ const draftsReducer = (
         ...state,
         error: payload.error,
       };
+    default:
+      return state;
   }
 };
 

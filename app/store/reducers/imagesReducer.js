@@ -1,23 +1,26 @@
 import Actions from '../actions';
 
-const contactReducer = (
+const imagesReducer = (
   state = {
-    data: '',
+    data: [],
     error: undefined,
   },
   { type, payload },
 ) => {
   switch (type) {
-    case Actions.fetchContactSuccess:
+    case Actions.uploadImageSuccess: {
+      const arr = state.data;
+      arr.push({ url: payload.image });
       return {
         ...state,
-        data: payload.contact,
+        data: arr,
         error: undefined,
       };
-    case Actions.fetchContactFail:
+    }
+    case Actions.uploadImageFail:
       return {
         ...state,
-        data: '',
+        data: [],
         error: payload.error,
       };
     default:
@@ -25,4 +28,4 @@ const contactReducer = (
   }
 };
 
-export default contactReducer;
+export default imagesReducer;

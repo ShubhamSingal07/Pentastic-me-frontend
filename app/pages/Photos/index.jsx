@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import './style.scss';
 import * as Actions from '../../actions';
 import PhotosList from '../../components/PhotosList';
 
@@ -9,11 +10,11 @@ class Photos extends React.Component {
     loading: false,
   };
 
-  componentDidMount() {
-    const { match, fetchPhotos } = this.props;
-    const page = match.props.pageNo;
+  async componentDidMount() {
+    const { match, fetchPhotos, loggedIn } = this.props;
+    const page = match.params.pageNo;
     this.setState({ loading: true });
-    fetchPhotos({ page, loggedIn });
+    await fetchPhotos({ page, loggedIn });
     this.setState({ loading: false });
   }
 
@@ -21,12 +22,12 @@ class Photos extends React.Component {
     const { loading } = this.state;
     const { photos } = this.props;
 
-    if (loading) return <div>Loading</div>;
+    if (loading) return <div className="photos-page">Loading</div>;
 
-    if (photos.error) return <div>{photos.error}</div>;
+    if (photos.error) return <div className="photos-page">{photos.error}</div>;
 
     return (
-      <div>
+      <div className="photos-page">
         <PhotosList photos={photos.data} />
       </div>
     );
@@ -39,7 +40,7 @@ const mapStateToProps = ({ auth, photos }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchPhotos: dispatch(Actions.fetchPhotos),
+  fetchPhotos: payload => dispatch(Actions.fetchPhotos(payload)),
 });
 
 export default connect(

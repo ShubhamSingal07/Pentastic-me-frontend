@@ -29,7 +29,7 @@ const storiesReducer = (
     case Actions.fetchStoriesFail:
       return {
         ...state,
-        data: undefined,
+        data: [],
         error: payload.error,
       };
     default:

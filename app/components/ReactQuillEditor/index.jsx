@@ -12,17 +12,32 @@ class Editor extends React.PureComponent {
   state = {
     // editorHtml: '',
     countOfWords: '',
+    readOnlyClassName: '',
   };
 
   componentDidMount() {
+    const { readOnly } = this.props;
     this.editor.focus();
     this.registerFormats();
     this.countWords();
+
+    if (readOnly) {
+      this.setState({ readOnlyClassName: 'readOnly' });
+    } else {
+      this.setState({ readOnlyClassName: '' });
+    }
   }
 
   componentDidUpdate() {
+    const { readOnly } = this.props;
     this.registerFormats();
     this.countWords();
+
+    if (readOnly) {
+      this.setState({ readOnlyClassName: 'readOnly' });
+    } else {
+      this.setState({ readOnlyClassName: '' });
+    }
   }
 
   insertDivider = () => {
@@ -76,11 +91,11 @@ class Editor extends React.PureComponent {
   }
 
   render() {
-    const { countOfWords } = this.state;
+    const { countOfWords, readOnlyClassName } = this.state;
     const { readOnly, handleChange, value } = this.props;
     return (
       <div>
-        <div id="toolbar">
+        <div id="toolbar" className={`ql-toolbar ql-snow ${readOnlyClassName}`}>
           <span className="ql-formats">
             <button className="ql-header" value="1" />
             <button className="ql-header" value="2" />
@@ -145,6 +160,7 @@ class Editor extends React.PureComponent {
           onChange={handleChange}
           theme="snow"
           readOnly={readOnly}
+          className={`${readOnlyClassName}`}
           placeholder="Tell your Story..."
           modules={{
             toolbar: {

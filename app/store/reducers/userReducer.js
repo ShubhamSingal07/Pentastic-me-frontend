@@ -2,7 +2,7 @@ import Actions from '../actions';
 
 const userReducer = (
   state = {
-    data: undefined,
+    data: {},
   },
   { type, payload },
 ) => {
@@ -42,6 +42,7 @@ const userReducer = (
           ...state,
           data: payload.user,
         };
+      return state;
     }
     case Actions.fetchPhotoSuccess: {
       if (payload.reset)
@@ -49,6 +50,7 @@ const userReducer = (
           ...state,
           data: payload.user,
         };
+      return state;
     }
     case Actions.fetchAboutSuccess: {
       if (payload.reset)
@@ -56,6 +58,7 @@ const userReducer = (
           ...state,
           data: payload.user,
         };
+      return state;
     }
     case Actions.fetchContactSuccess: {
       if (payload.reset)
@@ -63,7 +66,49 @@ const userReducer = (
           ...state,
           data: payload.user,
         };
+      return state;
     }
+    case Actions.fetchDraftSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+      return state;
+    }
+    case Actions.fetchDraftsSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+      return state;
+    }
+    case Actions.fetchBookmarksSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+      return state;
+    }
+    case Actions.logoutSuccess: {
+      return {
+        data: {},
+      };
+    }
+    case Actions.refreshSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+      return state;
+    }
+    case Actions.refreshFail:
+      return {
+        data: {},
+      };
     default:
       return state;
   }

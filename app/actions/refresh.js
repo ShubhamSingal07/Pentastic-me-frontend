@@ -1,20 +1,20 @@
-import Actions from '../../store/actions';
+import Actions from '../store/actions';
 
-const fetchBookmarksSuccess = payload => ({
-  type: Actions.fetchBookmarksSuccess,
+const refreshSuccess = payload => ({
+  type: Actions.refreshSuccess,
   payload,
 });
 
-const fetchBookmarksFail = payload => ({
-  type: Actions.fetchBookmarksFail,
+const refreshFail = payload => ({
+  type: Actions.refreshFail,
   payload,
 });
 
 const URL = process.env.URL;
 
-export const fetchBookmarks = ({ loggedIn }) => async dispatch => {
+export const refresh = ({ loggedIn }) => async dispatch => {
   try {
-    const response = await fetch(`${URL}/api/bookmark`, {
+    const response = await fetch(`${URL}/api/refresh`, {
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
       },
@@ -23,12 +23,12 @@ export const fetchBookmarks = ({ loggedIn }) => async dispatch => {
     if (response.status === 200) {
       data.loggedIn = data.user ? true : false;
       data.reset = loggedIn === data.loggedIn ? false : true;
-      return dispatch(fetchBookmarksSuccess(data));
+      return dispatch(refreshSuccess(data));
     }
-    return dispatch(fetchBookmarksFail(data));
+    return dispatch(refreshFail(data));
   } catch (err) {
     return dispatch(
-      fetchBookmarksFail({
+      refreshFail({
         error: 'Oops! Looks like something went wrong',
       }),
     );
