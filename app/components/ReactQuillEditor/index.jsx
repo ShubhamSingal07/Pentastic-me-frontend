@@ -10,7 +10,6 @@ import dividerIcon from './icons/divider.svg';
 import * as Actions from '../../actions';
 import DraftSaveModal from '../DraftSaveModal';
 import PublishModal from '../PublishModal';
-import { async } from 'q';
 
 class Editor extends React.PureComponent {
   state = {
@@ -20,6 +19,7 @@ class Editor extends React.PureComponent {
     showDraftModal: false,
     showPublishModal: false,
     saveLoading: false,
+    showSave: false,
     publishLoading: false,
     error: undefined,
   };
@@ -88,6 +88,10 @@ class Editor extends React.PureComponent {
     return text.length;
   }
 
+  handleEditClick = () => {
+    this.setState({ showSave: true, readOnly: false });
+  };
+
   handleSaveClick = async () => {
     const { title, editorHtml } = this.state;
     this.setState({ showDraftModal: false, saveLoading: true, error: undefined });
@@ -113,6 +117,15 @@ class Editor extends React.PureComponent {
       this.setState({ publishLoading: false, error: undefined });
       this.props.history.push(`/stories/${data.storyId}`);
     }
+  };
+
+  handleEditStoryClick = async () => {
+    const { title, storyHtml, image } = this.state;
+    const { story } = this.props;
+    this.setState({ publishLoading: true, showPublishModal: false });
+    const data = await Actions.editStory(story.data._id, title, storyHtml, image);
+    if (data.error) this.setState({ publishLoading: false, readOnly: false, error: data.error });
+    else this.setState({ publishLoading: false, readOnly: true, showSave: false });
   };
 
   handleTitleChange = e => {
@@ -220,8 +233,16 @@ class Editor extends React.PureComponent {
           </span>
         </div>
 
-        <button onClick={this.showDraftModal}>Save</button>
-        <button onClick={this.showPublishModal}>Publish</button>
+        <div>
+          {!storyPage ? (
+            <div>
+              <button onClick={this.showDraftModal}>Save</button>
+              <button onClick={this.showPublishModal}>Publish</button>
+            </div>
+          ) : null}
+          {storyPage && role === 'Admin' && !showSave ? <button onClick={this.handleEditClick}>Edit</button> : null}
+          {storyPage && showSave ? <button onClick={this.showPublishModal}>Save</button> : null}
+        </div>
 
         <ReactQuill
           ref={editor => {

@@ -7,6 +7,8 @@ import * as Actions from '../../actions';
 import ReactQuillEditor from '../../components/ReactQuillEditor';
 import PublishModal from '../../components/PublishModal';
 
+const OAUTH_URL = process.env.OAUTH_URL;
+
 class Story extends React.Component {
   state = {
     title: '',
@@ -30,13 +32,9 @@ class Story extends React.Component {
     this.setState({ loading: false, storyHtml: body });
   }
 
-  hidePublishModal = () => {
-    this.setState({ showPublishModal: false });
-  };
-
   handleClapStory = () => {
     const { clapStory, loggedIn, story } = this.props;
-    if (!loggedIn) return <Redirect to="http://localhost:3000/auth/login" />;
+    if (!loggedIn) return (window.location.href = OAUTH_URL);
     this.setState({ clapLoading: true });
     clapStory({ storyId: story.data._id });
     this.setState({ clapLoading: false });
@@ -44,7 +42,7 @@ class Story extends React.Component {
 
   handleUnclapStory = () => {
     const { unclapStory, story, loggedIn } = this.props;
-    if (!loggedIn) return <Redirect to="http://localhost:3000/auth/login" />;
+    if (!loggedIn) return (window.location.href = OAUTH_URL);
     this.setState({ clapLoading: true });
     unclapStory({ storyId: story.data._id });
     this.setState({ clapLoading: false });
@@ -52,7 +50,7 @@ class Story extends React.Component {
 
   handleAddBookmarkStory = () => {
     const { addToBookmark, loggedIn, story } = this.props;
-    if (!loggedIn) return <Redirect to="http://localhost:3000/auth/login" />;
+    if (!loggedIn) return (window.location.href = OAUTH_URL);
     this.setState({ bookmarkLoading: true });
     addToBookmark({ storyId: story.data._id });
     this.setState({ bookmarkLoading: false });
@@ -60,39 +58,10 @@ class Story extends React.Component {
 
   handleRemoveBookmarkStory = () => {
     const { deleteBookmark, loggedIn, story } = this.props;
-    if (!loggedIn) return <Redirect to="http://localhost:3000/auth/login" />;
+    if (!loggedIn) return (window.location.href = OAUTH_URL);
     this.setState({ bookmarkLoading: true });
     deleteBookmark({ storyId: story.data._id });
     this.setState({ bookmarkLoading: false });
-  };
-
-  handleStoryHtmlChange = html => {
-    this.setState({ storyHtml: html });
-  };
-
-  handleEditClick = () => {
-    this.setState({ showSave: true, readOnly: false });
-  };
-
-  handleSaveClick = () => {
-    this.setState({ showPublishModal: true });
-  };
-
-  handleTitleChange = e => {
-    this.setState({ title: e.target.value });
-  };
-
-  handleImageChange = image => {
-    this.setState({ image });
-  };
-
-  handleEditStoryClick = async () => {
-    const { title, storyHtml, image } = this.state;
-    const { story } = this.props;
-    this.setState({ publishLoading: true, showPublishModal: false });
-    const data = await Actions.editStory(story.data._id, title, storyHtml, image);
-    if (data.error) this.setState({ publishLoading: false, readOnly: false, error: data.error });
-    else this.setState({ publishLoading: false, readOnly: true, showSave: false });
   };
 
   render() {
@@ -114,16 +83,6 @@ class Story extends React.Component {
 
     return (
       <div className="story-page">
-        {role === 'Admin' && !showSave ? <button onClick={this.handleEditClick}>Edit</button> : null}
-        {showSave ? <button onClick={this.handleSaveClick}>Save</button> : null}
-        <PublishModal
-          titleChange={this.handleTitleChange}
-          imageChange={this.handleImageChange}
-          show={showPublishModal}
-          handleClick={this.handleEditStoryClick}
-          onHide={this.hidePublishModal}
-          title={title}
-        />
         <ReactQuillEditor handleChange={this.handleStoryHtmlChange} value={storyHtml} readOnly={readOnly} />
         <div>
           {story.data.isLiked ? (
