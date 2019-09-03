@@ -7,42 +7,39 @@ import './style.scss';
 
 import './formats';
 import dividerIcon from './icons/divider.svg';
+import * as Actions from '../../actions';
+import DraftSaveModal from '../DraftSaveModal';
+import PublishModal from '../PublishModal';
+import { async } from 'q';
 
 class Editor extends React.PureComponent {
   state = {
-    // editorHtml: '',
+    editorHtml: '',
+    readOnly: false,
     readOnlyClassName: '',
+    showDraftModal: false,
+    showPublishModal: false,
+    saveLoading: false,
+    publishLoading: false,
+    error: undefined,
   };
 
   componentDidMount() {
-    const { readOnly } = this.props;
+    const { value, storyPage } = this.props;
     this.editor.focus();
     this.registerFormats();
     this.countWords();
-
-    // if (readOnly) {
-    //   this.setState({ readOnlyClassName: 'readOnly' });
-    // } else {
-    //   this.setState({ readOnlyClassName: '' });
-    // }
-    console.log('in react quill editor component did mount', readOnly);
-    if (readOnly) this.readOnlyClassName = 'readOnly';
-    else this.readOnlyClassName = '';
-    console.log(this.readOnlyClassName);
+    this.setState({
+      editorHtml: value,
+    });
+    if (storyPage) {
+      this.setState({ readOnly: true, readOnlyClassName: 'readOnly' });
+    }
   }
 
   componentDidUpdate() {
-    const { readOnly } = this.props;
     this.registerFormats();
     this.countWords();
-
-    // if (readOnly) {
-    //   this.setState({ readOnlyClassName: 'readOnly' });
-    // } else {
-    //   this.setState({ readOnlyClassName: '' });
-    // }
-    if (readOnly) this.readOnlyClassName = 'readOnly';
-    else this.readOnlyClassName = '';
   }
 
   insertDivider = () => {
@@ -52,11 +49,11 @@ class Editor extends React.PureComponent {
     this.quillRef.setSelection(range.index + 2, Quill.sources.SILENT);
   };
 
-  // handleHtmlChange = html => {
-  //   this.setState({
-  //     editorHtml: html,
-  //   });
-  // };
+  handleHtmlChange = html => {
+    this.setState({
+      editorHtml: html,
+    });
+  };
 
   registerFormats() {
     if (typeof this.editor.getEditor !== 'function') return;
@@ -79,9 +76,6 @@ class Editor extends React.PureComponent {
     if (length !== 1) {
       label += 's';
     }
-    // this.setState({
-    //   countOfWords: `${length} ${label}`,
-    // });
     this.countOfWords = `${length} ${label}`;
   }
 
@@ -94,13 +88,82 @@ class Editor extends React.PureComponent {
     return text.length;
   }
 
+  handleSaveClick = async () => {
+    const { title, editorHtml } = this.state;
+    this.setState({ showDraftModal: false, saveLoading: true, error: undefined });
+    let data;
+    if (writePage) data = await Actions.addDraft(title, editorHtml);
+    else if (draftPage) data = await Actions.addDraft(title, draftHtml, draft.data._id);
+    if (data.error) this.setState({ saveLoading: false, error: data.error });
+    else {
+      this.setState({ saveLoading: false, error: undefined });
+      this.props.history.push(`/drafts/${data.draftId}`);
+    }
+  };
+
+  handlePublishClick = async () => {
+    const { title, image, editorHtml } = this.state;
+    const { storyPage, draft } = this.props;
+    this.setState({ showPublishModal: true, publishLoading: true, error: undefined });
+    let data;
+    if (storyPage) data = await Actions.publishStory(title, editorHtml, image);
+    else data = await Actions.publishDraft(draft.data._id, title, editorHtml, image);
+    if (data.error) this.setState({ publishLoading: false, error: data.error });
+    else {
+      this.setState({ publishLoading: false, error: undefined });
+      this.props.history.push(`/stories/${data.storyId}`);
+    }
+  };
+
+  handleTitleChange = e => {
+    this.setState({ title: e.target.value });
+  };
+
+  handleImageChange = e => {
+    this.setState({ image: e.target.value });
+  };
+
+  showDraftModal = () => {
+    this.setState({ showDraftModal: true });
+  };
+
+  showPublishModal = () => {
+    this.setState({ showPublishModal: true });
+  };
+
+  hideDraftModal = () => {
+    this.setState({ showDraftModal: false });
+  };
+
+  hidePublishModal = () => {
+    this.setState({ showPublishModal: false });
+  };
+
   render() {
-    const { editorHtml, readOnlyClassName } = this.state;
-    const { readOnly, handleChange, value, children } = this.props;
-    console.log('in read only ', readOnly, this.readOnlyClassName);
+    const { editorHtml, readOnlyClassName, showDraftModal, showPublishModal, readOnly } = this.state;
+
+    if (error) return <div className="draft-page">{error}</div>;
+
     return (
       <div>
-        <div id="toolbar" className={`ql-toolbar ql-snow ${this.readOnlyClassName}`}>
+        <div>
+          <DraftSaveModal
+            titleChange={this.handleTitleChange}
+            show={showDraftModal}
+            onHide={this.hideDraftModal}
+            handleClick={this.handleSaveClick}
+            title={title}
+          />
+          <PublishModal
+            titleChange={this.handleTitleChange}
+            imageChange={this.handleImageChange}
+            show={showPublishModal}
+            onHide={this.hidePublishModal}
+            handleClick={this.handlePublishClick}
+            title={title}
+          />
+        </div>
+        <div id="toolbar" className={`ql-toolbar ql-snow ${readOnlyClassName}`}>
           <span className="ql-formats">
             <button className="ql-header" value="1" />
             <button className="ql-header" value="2" />
@@ -157,17 +220,18 @@ class Editor extends React.PureComponent {
           </span>
         </div>
 
-        {children || null}
+        <button onClick={this.showDraftModal}>Save</button>
+        <button onClick={this.showPublishModal}>Publish</button>
 
         <ReactQuill
           ref={editor => {
             this.editor = editor;
           }}
-          value={value}
-          onChange={handleChange}
+          value={editorHtml}
+          onChange={this.handleHtmlChange}
           theme="snow"
           readOnly={readOnly}
-          className={`${this.readOnlyClassName}`}
+          className={`${readOnlyClassName}`}
           placeholder="Tell your Story..."
           modules={{
             toolbar: {
