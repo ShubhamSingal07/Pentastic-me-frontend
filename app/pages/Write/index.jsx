@@ -74,7 +74,7 @@ class Write extends React.Component {
     if (data.error) this.setState({ publishLoading: false, error: data.error });
     else {
       this.setState({ publishLoading: false, error: undefined });
-      return <Redirect to={`/stories/${data.storyId}`} />;
+      this.props.history.push(`/stories/${data.storyId}`);
     }
   };
 
@@ -86,8 +86,6 @@ class Write extends React.Component {
 
     if (!loggedIn) return (window.location.href = process.env.OAUTH_URL);
 
-    console.log('in write page', role);
-
     if (role !== 'Admin') return <Redirect to="/" />;
 
     if (error) return <div className="write-page">{error}</div>;
@@ -95,8 +93,6 @@ class Write extends React.Component {
     return (
       <div className="write-page">
         <div>
-          <button onClick={this.showDraftModal}>Save</button>
-          <button onClick={this.showPublishModal}>Publish</button>
           <DraftSaveModal
             titleChange={this.handleTitleChange}
             show={showDraftModal}
@@ -113,7 +109,10 @@ class Write extends React.Component {
             title={title}
           />
         </div>
-        <ReactQuillEditor handleChange={this.handleStoryHtmlChange} value={storyHtml} readOnly={false} />
+        <ReactQuillEditor handleChange={this.handleStoryHtmlChange} value={storyHtml} readOnly={false}>
+          <button onClick={this.showDraftModal}>Save</button>
+          <button onClick={this.showPublishModal}>Publish</button>
+        </ReactQuillEditor>
       </div>
     );
   }

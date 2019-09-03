@@ -11,7 +11,6 @@ import dividerIcon from './icons/divider.svg';
 class Editor extends React.PureComponent {
   state = {
     // editorHtml: '',
-    countOfWords: '',
     readOnlyClassName: '',
   };
 
@@ -21,11 +20,15 @@ class Editor extends React.PureComponent {
     this.registerFormats();
     this.countWords();
 
-    if (readOnly) {
-      this.setState({ readOnlyClassName: 'readOnly' });
-    } else {
-      this.setState({ readOnlyClassName: '' });
-    }
+    // if (readOnly) {
+    //   this.setState({ readOnlyClassName: 'readOnly' });
+    // } else {
+    //   this.setState({ readOnlyClassName: '' });
+    // }
+    console.log('in react quill editor component did mount', readOnly);
+    if (readOnly) this.readOnlyClassName = 'readOnly';
+    else this.readOnlyClassName = '';
+    console.log(this.readOnlyClassName);
   }
 
   componentDidUpdate() {
@@ -33,11 +36,13 @@ class Editor extends React.PureComponent {
     this.registerFormats();
     this.countWords();
 
-    if (readOnly) {
-      this.setState({ readOnlyClassName: 'readOnly' });
-    } else {
-      this.setState({ readOnlyClassName: '' });
-    }
+    // if (readOnly) {
+    //   this.setState({ readOnlyClassName: 'readOnly' });
+    // } else {
+    //   this.setState({ readOnlyClassName: '' });
+    // }
+    if (readOnly) this.readOnlyClassName = 'readOnly';
+    else this.readOnlyClassName = '';
   }
 
   insertDivider = () => {
@@ -59,8 +64,6 @@ class Editor extends React.PureComponent {
     const quillRef = this.editor.getEditor();
     if (quillRef != null) {
       this.quillRef = quillRef;
-      // window.editor = this.editor;
-      // window.quillRef = quillRef;
     }
   }
 
@@ -76,9 +79,10 @@ class Editor extends React.PureComponent {
     if (length !== 1) {
       label += 's';
     }
-    this.setState({
-      countOfWords: `${length} ${label}`,
-    });
+    // this.setState({
+    //   countOfWords: `${length} ${label}`,
+    // });
+    this.countOfWords = `${length} ${label}`;
   }
 
   calculate() {
@@ -91,11 +95,12 @@ class Editor extends React.PureComponent {
   }
 
   render() {
-    const { countOfWords, readOnlyClassName } = this.state;
-    const { readOnly, handleChange, value } = this.props;
+    const { editorHtml, readOnlyClassName } = this.state;
+    const { readOnly, handleChange, value, children } = this.props;
+    console.log('in read only ', readOnly, this.readOnlyClassName);
     return (
       <div>
-        <div id="toolbar" className={`ql-toolbar ql-snow ${readOnlyClassName}`}>
+        <div id="toolbar" className={`ql-toolbar ql-snow ${this.readOnlyClassName}`}>
           <span className="ql-formats">
             <button className="ql-header" value="1" />
             <button className="ql-header" value="2" />
@@ -152,6 +157,8 @@ class Editor extends React.PureComponent {
           </span>
         </div>
 
+        {children || null}
+
         <ReactQuill
           ref={editor => {
             this.editor = editor;
@@ -160,7 +167,7 @@ class Editor extends React.PureComponent {
           onChange={handleChange}
           theme="snow"
           readOnly={readOnly}
-          className={`${readOnlyClassName}`}
+          className={`${this.readOnlyClassName}`}
           placeholder="Tell your Story..."
           modules={{
             toolbar: {
@@ -175,7 +182,7 @@ class Editor extends React.PureComponent {
           }}
         />
 
-        <div id="counter">{countOfWords}</div>
+        <div id="counter">{this.countOfWords}</div>
       </div>
     );
   }
