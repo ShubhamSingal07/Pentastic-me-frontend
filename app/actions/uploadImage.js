@@ -15,7 +15,6 @@ const URL = process.env.URL;
 export const uploadImage = ({ file, name }) => async dispatch => {
   try {
     const fd = new FormData();
-    console.log(file);
     fd.append('image', file, name);
     const response = await fetch(`${URL}/api/image/upload`, {
       method: 'POST',

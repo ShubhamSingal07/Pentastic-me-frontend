@@ -4,7 +4,7 @@ import ImageUpload from '../ImageUpload';
 
 class PublishModal extends React.Component {
   render() {
-    const { titleChange, show, onHide, handleClick, title } = this.props;
+    const { titleChange, imageChange, show, onHide, handleClick, title } = this.props;
 
     return (
       <Modal show={show} onHide={onHide} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
@@ -16,7 +16,7 @@ class PublishModal extends React.Component {
             <input type="text" value={title} onChange={titleChange} value={title} />
             <span data-placeholder="Title" />
           </div>
-          <ImageUpload isPublishModal={true} />
+          <ImageUpload isPublishModal={true} imageChange={imageChange} />
         </Modal.Body>
         <Modal.Footer>
           <button onClick={handleClick}>Publish</button>

@@ -34,6 +34,7 @@ class ImageUpload extends React.Component {
                     value={selectedFile}
                     onChange={this.handleFileSelector}
                     style={{ display: 'none' }}
+                    required
                     ref={fileInput => (this.fileInput = fileInput)}
                   />
                   <button onClick={() => this.fileInput.click()}>+</button>
@@ -41,7 +42,7 @@ class ImageUpload extends React.Component {
               </div>
             ) : (
               <div>
-                <img src={images.data[0]} />
+                <img src={images.data[0].url} />
               </div>
             )}
           </div>

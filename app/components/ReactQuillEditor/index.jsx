@@ -116,12 +116,12 @@ class Editor extends React.PureComponent {
 
   handlePublishClick = async () => {
     const { title, image, editorHtml } = this.state;
-    const { storyPage, writePage, draftPage, storyId, draftId } = this.props;
+    const { storyPage, writePage, draftPage, storyId, draftId, images } = this.props;
     this.setState({ showPublishModal: false, publishLoading: true, error: undefined });
     let data;
-    if (writePage) data = await Actions.publishStory(title, editorHtml, image);
-    else if (draftPage) data = await Actions.publishDraft(draftId, title, editorHtml, image);
-    else data = await Actions.editStory(storyId, title, editorHtml, image);
+    if (writePage) data = await Actions.publishStory(title, editorHtml, images.data[0].url);
+    else if (draftPage) data = await Actions.publishDraft(draftId, title, editorHtml, images.data[0].url);
+    else data = await Actions.editStory(storyId, title, editorHtml, images.data[0].url);
     if (data.error) this.setState({ publishLoading: false, error: data.error });
     else {
       if (storyPage)
@@ -289,8 +289,9 @@ class Editor extends React.PureComponent {
   }
 }
 
-const mapStateToProps = ({ user }) => ({
+const mapStateToProps = ({ user, images }) => ({
   role: user.data.role,
+  images,
 });
 
 export default withRouter(connect(mapStateToProps)(Editor));
