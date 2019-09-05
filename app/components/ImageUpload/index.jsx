@@ -42,7 +42,7 @@ class ImageUpload extends React.Component {
               </div>
             ) : (
               <div>
-                <img src={images.data[0].url} />
+                <img src={images.data[0].url} width="100%" />
               </div>
             )}
           </div>

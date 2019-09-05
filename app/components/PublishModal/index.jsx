@@ -13,7 +13,7 @@ class PublishModal extends React.Component {
         </Modal.Header>
         <Modal.Body>
           <div>
-            <input type="text" value={title} onChange={titleChange} value={title} />
+            <input type="text" value={title} onChange={titleChange} value={title} required />
             <span data-placeholder="Title" />
           </div>
           <ImageUpload isPublishModal={true} imageChange={imageChange} />

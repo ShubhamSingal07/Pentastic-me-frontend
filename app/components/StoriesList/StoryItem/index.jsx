@@ -8,7 +8,6 @@ const StoryItem = ({ story, deleteBookmarks, bookmarkPage }) => {
   const handleDeleteBookmark = () => {
     deleteBookmarks({ storyId: story._id });
   };
-  console.log(story);
   return (
     <div>
       <Link to={`/stories/${story._id}`}>

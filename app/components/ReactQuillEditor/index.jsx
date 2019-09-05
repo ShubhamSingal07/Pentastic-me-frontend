@@ -13,12 +13,9 @@ import * as Actions from '../../actions';
 import DraftSaveModal from '../DraftSaveModal';
 import PublishModal from '../PublishModal';
 
-const Delta = Quill.import('delta');
-
 class Editor extends React.PureComponent {
   state = {
     title: '',
-    image: '',
     editorHtml: '',
     readOnly: false,
     readOnlyClassName: '',
@@ -31,7 +28,7 @@ class Editor extends React.PureComponent {
   };
 
   componentDidMount() {
-    const { readOnly } = this.state;
+    // const { readOnly } = this.state;
     const { value, storyPage } = this.props;
     this.editor.focus();
     this.registerFormats();
@@ -45,7 +42,7 @@ class Editor extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    const { readOnly } = this.state;
+    // const { readOnly } = this.state;
     this.registerFormats();
     // if (!readOnly) this.countWords();
   }
@@ -103,6 +100,8 @@ class Editor extends React.PureComponent {
   handleSaveClick = async () => {
     const { title, editorHtml } = this.state;
     const { writePage, draftPage, draftId } = this.props;
+
+    if (!title) return;
     this.setState({ showDraftModal: false, saveLoading: true, error: undefined });
     let data;
     if (writePage) data = await Actions.addDraft(title, editorHtml);
@@ -115,8 +114,10 @@ class Editor extends React.PureComponent {
   };
 
   handlePublishClick = async () => {
-    const { title, image, editorHtml } = this.state;
+    const { title, editorHtml } = this.state;
     const { storyPage, writePage, draftPage, storyId, draftId, images } = this.props;
+
+    if (!images.data[0] || !title) return;
     this.setState({ showPublishModal: false, publishLoading: true, error: undefined });
     let data;
     if (writePage) data = await Actions.publishStory(title, editorHtml, images.data[0].url);
@@ -135,10 +136,6 @@ class Editor extends React.PureComponent {
 
   handleTitleChange = e => {
     this.setState({ title: e.target.value });
-  };
-
-  handleImageChange = e => {
-    this.setState({ image: e.target.value });
   };
 
   showDraftModal = () => {
@@ -166,7 +163,6 @@ class Editor extends React.PureComponent {
       readOnly,
       error,
       title,
-      image,
       showSave,
     } = this.state;
     const { storyPage, role } = this.props;
@@ -185,7 +181,6 @@ class Editor extends React.PureComponent {
           />
           <PublishModal
             titleChange={this.handleTitleChange}
-            imageChange={this.handleImageChange}
             show={showPublishModal}
             onHide={this.hidePublishModal}
             handleClick={this.handlePublishClick}
