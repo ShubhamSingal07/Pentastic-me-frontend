@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactQuill, { Quill } from 'react-quill';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
@@ -11,8 +13,12 @@ import * as Actions from '../../actions';
 import DraftSaveModal from '../DraftSaveModal';
 import PublishModal from '../PublishModal';
 
+const Delta = Quill.import('delta');
+
 class Editor extends React.PureComponent {
   state = {
+    title: '',
+    image: '',
     editorHtml: '',
     readOnly: false,
     readOnlyClassName: '',
@@ -25,10 +31,11 @@ class Editor extends React.PureComponent {
   };
 
   componentDidMount() {
+    const { readOnly } = this.state;
     const { value, storyPage } = this.props;
     this.editor.focus();
     this.registerFormats();
-    this.countWords();
+    // if (!readOnly) this.countWords();
     this.setState({
       editorHtml: value,
     });
@@ -38,8 +45,9 @@ class Editor extends React.PureComponent {
   }
 
   componentDidUpdate() {
+    const { readOnly } = this.state;
     this.registerFormats();
-    this.countWords();
+    // if (!readOnly) this.countWords();
   }
 
   insertDivider = () => {
@@ -64,68 +72,65 @@ class Editor extends React.PureComponent {
     }
   }
 
-  countWords() {
-    this.quillRef.on('text-change', this.update.bind(this));
-    this.unit = 'word';
-    this.update();
-  }
+  // countWords() {
+  //   this.quillRef.on('text-change', this.update.bind(this));
+  //   this.unit = 'word';
+  //   this.update();
+  // }
 
-  update() {
-    const length = this.calculate();
-    let label = this.unit;
-    if (length !== 1) {
-      label += 's';
-    }
-    this.countOfWords = `${length} ${label}`;
-  }
+  // update() {
+  //   const length = this.calculate();
+  //   let label = this.unit;
+  //   if (length !== 1) {
+  //     label += 's';
+  //   }
+  //   this.countOfWords = `${length} ${label}`;
+  // }
 
-  calculate() {
-    let text = this.quillRef.getText();
-    if (this.unit === 'word') {
-      text = text.trim();
-      return text.length > 0 ? text.split(/\s+/).length : 0;
-    }
-    return text.length;
-  }
+  // calculate() {
+  //   let text = this.quillRef.getText();
+  //   if (this.unit === 'word') {
+  //     text = text.trim();
+  //     return text.length > 0 ? text.split(/\s+/).length : 0;
+  //   }
+  //   return text.length;
+  // }
 
   handleEditClick = () => {
-    this.setState({ showSave: true, readOnly: false });
+    this.setState({ showSave: true, readOnly: false, readOnlyClassName: '' });
   };
 
   handleSaveClick = async () => {
     const { title, editorHtml } = this.state;
+    const { writePage, draftPage, draftId } = this.props;
     this.setState({ showDraftModal: false, saveLoading: true, error: undefined });
     let data;
     if (writePage) data = await Actions.addDraft(title, editorHtml);
-    else if (draftPage) data = await Actions.addDraft(title, draftHtml, draft.data._id);
+    else if (draftPage) data = await Actions.addDraft(title, editorHtml, draftId);
     if (data.error) this.setState({ saveLoading: false, error: data.error });
     else {
       this.setState({ saveLoading: false, error: undefined });
-      this.props.history.push(`/drafts/${data.draftId}`);
+      if (writePage) this.props.history.push(`/drafts/${data.draftId}`);
     }
   };
 
   handlePublishClick = async () => {
     const { title, image, editorHtml } = this.state;
-    const { storyPage, draft } = this.props;
-    this.setState({ showPublishModal: true, publishLoading: true, error: undefined });
+    const { storyPage, writePage, draftPage, storyId, draftId } = this.props;
+    this.setState({ showPublishModal: false, publishLoading: true, error: undefined });
     let data;
-    if (storyPage) data = await Actions.publishStory(title, editorHtml, image);
-    else data = await Actions.publishDraft(draft.data._id, title, editorHtml, image);
+    if (writePage) data = await Actions.publishStory(title, editorHtml, image);
+    else if (draftPage) data = await Actions.publishDraft(draftId, title, editorHtml, image);
+    else data = await Actions.editStory(storyId, title, editorHtml, image);
     if (data.error) this.setState({ publishLoading: false, error: data.error });
     else {
-      this.setState({ publishLoading: false, error: undefined });
-      this.props.history.push(`/stories/${data.storyId}`);
+      if (storyPage)
+        this.setState({ publishLoading: false, readOnly: true, showSave: false, readOnlyClassName: 'readOnly' });
+      else {
+        this.setState({ publishLoading: false, error: undefined });
+        this.props.history.push(`/stories/${data.storyId}`);
+      }
     }
-  };
-
-  handleEditStoryClick = async () => {
-    const { title, storyHtml, image } = this.state;
-    const { story } = this.props;
-    this.setState({ publishLoading: true, showPublishModal: false });
-    const data = await Actions.editStory(story.data._id, title, storyHtml, image);
-    if (data.error) this.setState({ publishLoading: false, readOnly: false, error: data.error });
-    else this.setState({ publishLoading: false, readOnly: true, showSave: false });
   };
 
   handleTitleChange = e => {
@@ -153,7 +158,18 @@ class Editor extends React.PureComponent {
   };
 
   render() {
-    const { editorHtml, readOnlyClassName, showDraftModal, showPublishModal, readOnly } = this.state;
+    const {
+      editorHtml,
+      readOnlyClassName,
+      showDraftModal,
+      showPublishModal,
+      readOnly,
+      error,
+      title,
+      image,
+      showSave,
+    } = this.state;
+    const { storyPage, role } = this.props;
 
     if (error) return <div className="draft-page">{error}</div>;
 
@@ -209,7 +225,7 @@ class Editor extends React.PureComponent {
             <select className="ql-background" />
           </span>
           <span className="ql-formats">
-            <select className="ql-font" defaultValue="serif">
+            <select className="ql-font" defaultValue="sans-serif">
               <option value="sans-serif">Sans Serif</option>
               <option value="serif">Serif</option>
               <option value="monospace">Monospace</option>
@@ -234,7 +250,7 @@ class Editor extends React.PureComponent {
         </div>
 
         <div>
-          {!storyPage ? (
+          {!storyPage && role === 'Admin' ? (
             <div>
               <button onClick={this.showDraftModal}>Save</button>
               <button onClick={this.showPublishModal}>Publish</button>
@@ -267,10 +283,14 @@ class Editor extends React.PureComponent {
           }}
         />
 
-        <div id="counter">{this.countOfWords}</div>
+        {/* {!readOnly ? <div id="counter">{this.countOfWords}</div> : null} */}
       </div>
     );
   }
 }
 
-export default Editor;
+const mapStateToProps = ({ user }) => ({
+  role: user.data.role,
+});
+
+export default withRouter(connect(mapStateToProps)(Editor));

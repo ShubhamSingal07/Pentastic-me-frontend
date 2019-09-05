@@ -11,17 +11,9 @@ const OAUTH_URL = process.env.OAUTH_URL;
 
 class Story extends React.Component {
   state = {
-    title: '',
-    image: '',
-    storyHtml: '',
     loading: false,
     clapLoading: false,
     bookmarkLoading: false,
-    readOnly: true,
-    publishLoading: false,
-    showSave: false,
-    showPublishModal: false,
-    error: undefined,
   };
 
   async componentDidMount() {
@@ -65,25 +57,15 @@ class Story extends React.Component {
   };
 
   render() {
-    const {
-      loading,
-      clapLoading,
-      bookmarkLoading,
-      storyHtml,
-      showSave,
-      publishLoading,
-      showPublishModal,
-      title,
-      readOnly,
-    } = this.state;
-    const { story, role } = this.props;
+    const { loading, clapLoading, bookmarkLoading, storyHtml } = this.state;
+    const { story, match } = this.props;
     if (loading) return <div>Loading</div>;
 
     if (story.error) return <div>{story.error}</div>;
 
     return (
       <div className="story-page">
-        <ReactQuillEditor handleChange={this.handleStoryHtmlChange} value={storyHtml} readOnly={readOnly} />
+        <ReactQuillEditor value={storyHtml} storyPage={true} storyId={match.params.storyId} />
         <div>
           {story.data.isLiked ? (
             <button onClick={this.handleUnclapStory}>Unclap</button>
@@ -101,11 +83,9 @@ class Story extends React.Component {
   }
 }
 
-const mapStateToProps = ({ story, auth, user }) => ({
+const mapStateToProps = ({ story, auth }) => ({
   loggedIn: auth.loggedIn,
   story,
-  role: user.data.role,
-  user,
 });
 
 const mapDispatchToProps = dispatch => ({

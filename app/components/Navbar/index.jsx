@@ -35,8 +35,7 @@ class NavbarComponent extends React.Component {
 
   render() {
     const { className } = this.state;
-    const { loggedIn, role, user } = this.props;
-    console.log('in navbar component', user);
+    const { loggedIn, role } = this.props;
     return (
       <React.Fragment>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark justify-content-sm-start fixed-top p-1 pl-2">
@@ -185,7 +184,6 @@ class NavbarComponent extends React.Component {
 const mapStateToProps = ({ auth, user }) => ({
   loggedIn: auth.loggedIn,
   role: user.data.role,
-  user,
 });
 
 const mapDispatchToProps = dispatch => ({

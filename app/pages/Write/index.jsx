@@ -30,7 +30,7 @@ class Write extends React.Component {
 
     return (
       <div className="write-page">
-        <ReactQuillEditor value={storyHtml} writePage={true} />
+        <ReactQuillEditor value={storyHtml} writePage={true} value="" />
       </div>
     );
   }

@@ -8,6 +8,7 @@ import ReactQuillEditor from '../../components/ReactQuillEditor';
 class Draft extends React.Component {
   state = {
     loading: false,
+    draftHtml: '',
   };
 
   async componentDidMount() {
@@ -19,8 +20,8 @@ class Draft extends React.Component {
   }
 
   render() {
-    const { loading } = this.state;
-    const { draft } = this.props;
+    const { loading, draftHtml } = this.state;
+    const { draft, match } = this.props;
 
     if (loading) return <div className="draft-page">Loading</div>;
 
@@ -28,7 +29,7 @@ class Draft extends React.Component {
 
     return (
       <div className="draft-page">
-        <ReactQuillEditor value={draftHtml} draftPage={true} />
+        <ReactQuillEditor value={draftHtml} draftPage={true} draftId={match.params.draftId} />
       </div>
     );
   }
