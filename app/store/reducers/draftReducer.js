@@ -1,4 +1,4 @@
-import Actions from '../../store/actions';
+import Actions from '../actions';
 
 const draftReducer = (
   state = {

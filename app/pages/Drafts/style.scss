@@ -1,3 +1,22 @@
-.drafts-page {
-  margin-top: 48px;
+.drafts-page.container-fluid.page {
+  margin-top: 50px !important;
+  .drafts-heading {
+    max-width: 700px;
+    margin: auto;
+    font-family: 'Crimson Text', sans-serif;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    color: rgb(23, 64, 78);
+    .header-div {
+      background: white;
+      border-radius: 7px;
+      padding: 4px;
+      padding-left: 10px;
+      box-shadow: 1px 1px 5px rgb(119, 134, 139);
+      transition: 0.3s;
+      &:hover {
+        box-shadow: 7px 3px 10px #9fb3b9;
+      }
+    }
+  }
 }

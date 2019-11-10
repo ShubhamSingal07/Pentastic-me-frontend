@@ -1,0 +1,17 @@
+.image-upload-container {
+  .btn-blue-grey {
+    color: rgb(66, 111, 114);
+    border-color: rgb(66, 111, 114);
+    &:hover {
+      color: white;
+      background: rgb(66, 111, 114);
+      border-color: rgb(66, 111, 114);
+    }
+  }
+  .btn:disabled {
+    opacity: 1 !important;
+  }
+  .spinner-container {
+    text-align: center;
+  }
+}

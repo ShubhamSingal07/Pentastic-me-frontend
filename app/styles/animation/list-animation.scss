@@ -1,0 +1,75 @@
+.top {
+  animation: fadeInFromTop 0.4s linear;
+  animation-fill-mode: both;
+}
+
+.bottom {
+  animation: fadeInFromBottom 0.4s linear;
+  animation-fill-mode: both;
+}
+
+.left {
+  animation: fadeInFromLeft 0.4s linear;
+  animation-fill-mode: both;
+}
+
+.right {
+  animation: fadeInFromRight 0.4s linear;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeInFromTop {
+  0% {
+    opacity: 0;
+    bottom: 100px;
+  }
+  75% {
+    opacity: 0.5;
+    bottom: 0px;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInFromBottom {
+  0% {
+    opacity: 0;
+    top: 100px;
+  }
+  75% {
+    opacity: 0.5;
+    top: 0px;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInFromRight {
+  0% {
+    opacity: 0;
+    left: 100px;
+  }
+  75% {
+    opacity: 0.5;
+    left: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInFromLeft {
+  0% {
+    opacity: 0;
+    right: 100px;
+  }
+  75% {
+    opacity: 0.5;
+    right: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

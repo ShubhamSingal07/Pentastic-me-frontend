@@ -12,13 +12,13 @@ const draftsReducer = (
       return {
         ...state,
         data: payload.drafts,
-        error: payload.error,
+        error: undefined,
       };
     case Actions.fetchDraftsFail:
       return {
         ...state,
         data: [],
-        error: payload.error,
+        error: { status: 500, message: payload.error },
       };
     case Actions.deleteDraftsSuccess: {
       const data = state.data.filter(draft => draft._id !== payload.draftId);
@@ -31,7 +31,7 @@ const draftsReducer = (
     case Actions.deleteDraftsFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     default:
       return state;

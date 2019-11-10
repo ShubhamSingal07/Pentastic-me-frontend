@@ -32,7 +32,7 @@ const deleteCommentFail = payload => ({
 
 const URL = process.env.URL;
 
-export const addComment = ({ userId, name, photoId, comment }) => async dispatch => {
+export const addComment = ({ userId, thumbnail, name, photoId, comment }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/photo/comment/add/${photoId}`, {
       method: 'PATCH',
@@ -45,6 +45,7 @@ export const addComment = ({ userId, name, photoId, comment }) => async dispatch
     const data = await response.json();
     if (response.status === 200) {
       data.userId = userId;
+      data.thumbnail = thumbnail;
       data.comment = comment;
       data.name = name;
       data._id = data.commentId;
@@ -89,7 +90,6 @@ export const editComment = ({ photoId, commentId, comment }) => async dispatch =
 
 export const deleteComment = ({ photoId, commentId }) => async dispatch => {
   try {
-    console.log('delete comment', photoId, commentId);
     const response = await fetch(`${URL}/api/photo/comment/${photoId}`, {
       method: 'DELETE',
       headers: {
@@ -105,7 +105,6 @@ export const deleteComment = ({ photoId, commentId }) => async dispatch => {
     }
     return dispatch(deleteCommentFail(data));
   } catch (err) {
-    console.log(err);
     return dispatch(
       deleteCommentFail({
         error: 'Oops! Looks like something went wrong',

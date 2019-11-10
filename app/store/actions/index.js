@@ -54,4 +54,10 @@ export default keymirror({
   logout: null,
   refreshSuccess: null,
   refreshFail: null,
+  sortImages: null,
+  deleteImage: null,
+  fetchUsersSuccess: null,
+  fetchUsersFail: null,
+  changeUserRoleSuccess: null,
+  changeUserRoleFail: null,
 });

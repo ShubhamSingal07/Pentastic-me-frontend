@@ -12,12 +12,13 @@ const fetchBookmarksFail = payload => ({
 
 const URL = process.env.URL;
 
-export const fetchBookmarks = ({ loggedIn }) => async dispatch => {
+export const fetchBookmarks = ({ loggedIn, signal }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/bookmark`, {
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
       },
+      signal,
     });
     const data = await response.json();
     if (response.status === 200) {
@@ -27,6 +28,7 @@ export const fetchBookmarks = ({ loggedIn }) => async dispatch => {
     }
     return dispatch(fetchBookmarksFail(data));
   } catch (err) {
+    if (err.name === 'AbortError') return true;
     return dispatch(
       fetchBookmarksFail({
         error: 'Oops! Looks like something went wrong',

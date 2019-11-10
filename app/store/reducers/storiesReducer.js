@@ -4,6 +4,7 @@ const storiesReducer = (
   state = {
     data: [],
     error: undefined,
+    pages: 1,
   },
   { type, payload },
 ) => {
@@ -18,19 +19,21 @@ const storiesReducer = (
       return {
         ...state,
         data: [],
-        error: payload.error,
+        error: { status: 500, message: payload.error },
       };
     case Actions.fetchStoriesSuccess:
       return {
         ...state,
         data: payload.stories,
+        pages: payload.pages,
         error: undefined,
       };
     case Actions.fetchStoriesFail:
       return {
         ...state,
         data: [],
-        error: payload.error,
+        pages: 1,
+        error: { status: 500, message: payload.error },
       };
     default:
       return state;

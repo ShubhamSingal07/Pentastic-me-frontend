@@ -1,35 +1,47 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Helmet } from 'react-helmet';
 
-import './style.scss';
 import * as Actions from '../../actions';
 import ReactQuillEditor from '../../components/ReactQuillEditor';
+import Error500 from '../../components/Error/Error500';
 
 class Draft extends React.Component {
   state = {
     loading: false,
     draftHtml: '',
+    title: '',
   };
+
+  abortController = new AbortController();
 
   async componentDidMount() {
     const { match, fetchDraft, loggedIn } = this.props;
     const draftId = match.params.draftId;
     this.setState({ loading: true });
-    const data = await fetchDraft({ draftId, loggedIn });
-    this.setState({ loading: false, draftHtml: data.body });
+    const data = await fetchDraft({ draftId, loggedIn, signal: this.abortController.signal });
+    if (data === true) return;
+    this.setState({ loading: false, draftHtml: data.body, title: data.title });
+  }
+
+  componentWillUnmount() {
+    this.abortController.abort();
   }
 
   render() {
-    const { loading, draftHtml } = this.state;
+    const { loading, draftHtml, title } = this.state;
     const { draft, match } = this.props;
 
-    if (loading) return <div className="draft-page">Loading</div>;
+    if (loading) return <div />;
 
-    if (draft.error) return <div className="draft-page">{draft.error}</div>;
+    if (draft.error) return <Error500 />;
 
     return (
-      <div className="draft-page">
-        <ReactQuillEditor value={draftHtml} draftPage={true} draftId={match.params.draftId} />
+      <div className="draft-page page">
+        <Helmet>
+          <title>{title} - PentasticMe</title>
+        </Helmet>
+        <ReactQuillEditor value={draftHtml} draftTitle={title} draftPage={true} draftId={match.params.draftId} />
       </div>
     );
   }

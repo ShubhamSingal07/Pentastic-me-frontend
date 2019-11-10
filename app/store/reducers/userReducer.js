@@ -109,6 +109,14 @@ const userReducer = (
       return {
         data: {},
       };
+    case Actions.fetchUsersSuccess: {
+      if (payload.reset)
+        return {
+          ...state,
+          data: payload.user,
+        };
+      return state;
+    }
     default:
       return state;
   }

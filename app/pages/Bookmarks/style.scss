@@ -1,3 +1,22 @@
 .bookmarks-page {
-  margin-top: 48px;
+  .bookmarks-heading {
+    max-width: 700px;
+    width: 82%;
+    margin: 1em auto;
+    font-family: 'Crimson Text', sans-serif;
+    padding-right: 5px;
+    margin-bottom: 0px;
+    color: rgb(23, 64, 78);
+    .header-div {
+      background: white;
+      border-radius: 7px;
+      padding: 5px;
+      padding-left: 10px;
+      box-shadow: 1px 1px 5px rgb(119, 134, 139);
+      transition: 0.3s;
+      &:hover {
+        box-shadow: 7px 3px 10px #9fb3b9;
+      }
+    }
+  }
 }

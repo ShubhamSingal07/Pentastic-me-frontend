@@ -1,20 +1,33 @@
 import React from 'react';
 
+import './style.scss';
 import StoryItem from './StoryItem';
 
-const StoriesList = ({ stories, bookmarkPage }) => (
-  <div>
-    {bookmarkPage ? null : <h1>Stories</h1>}
-    {stories.length === 0 ? (
-      bookmarkPage ? (
-        <div>You do not have any story bookmarked</div>
-      ) : (
-        <div>There is no story by Author yet</div>
-      )
-    ) : (
-      stories.map(story => <StoryItem story={story} key={story._id} bookmarkPage={bookmarkPage} />)
-    )}
-  </div>
-);
+class StoriesList extends React.Component {
+  render() {
+    const { stories, bookmarkPage, username } = this.props;
+    return (
+      <div>
+        {stories.length === 0 ? (
+          bookmarkPage ? (
+            <div className="alert alert-warning bookmark-alert">You do not have any story bookmarked</div>
+          ) : (
+            <div className="alert alert-warning">There is no story by Author yet</div>
+          )
+        ) : (
+          <div className={bookmarkPage ? '' : 'container-fluid row'}>
+            {stories.map((story, idx) => (
+              <StoryItem story={story} key={story._id} bookmarkPage={bookmarkPage} name={username} index={idx} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+}
+
+// const mapStateToProps = ({ user }) => ({
+//   username: user.date.username,
+// });
 
 export default StoriesList;

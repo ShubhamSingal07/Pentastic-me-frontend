@@ -18,12 +18,12 @@ const photoReducer = (
       return {
         ...state,
         data: {},
-        error: payload.error,
+        error: { status: 500, message: payload.error },
       };
     case Actions.likePhotoSuccess: {
       const data = state.data;
       data.isLiked = true;
-      data.likes.total = data.likes.total + 1;
+      data.likes.total += 1;
       return {
         data,
         error: undefined,
@@ -32,12 +32,12 @@ const photoReducer = (
     case Actions.likePhotoFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     case Actions.dislikePhotoSuccess: {
       const data = state.data;
       data.isLiked = false;
-      data.likes.total = data.likes.total - 1;
+      data.likes.total -= 1;
       return {
         ...state,
         data,
@@ -47,13 +47,14 @@ const photoReducer = (
     case Actions.dislikePhotoFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     case Actions.addCommentSuccess: {
       const data = state.data;
       data.comments.total += 1;
       data.comments.comment.push({
         userId: payload.userId,
+        thumbnail: payload.thumbnail,
         name: payload.name,
         _id: payload._id,
         body: payload.comment,
@@ -67,7 +68,7 @@ const photoReducer = (
     case Actions.addCommentFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     case Actions.editCommentSuccess: {
       const data = state.data;
@@ -89,7 +90,7 @@ const photoReducer = (
     case Actions.editCommentFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     case Actions.deleteCommentSuccess: {
       const data = state.data;
@@ -104,7 +105,7 @@ const photoReducer = (
     case Actions.deleteCommentFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     default:
       return state;

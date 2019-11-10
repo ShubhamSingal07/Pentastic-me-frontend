@@ -22,12 +22,13 @@ const fetchPhotoFail = payload => ({
 
 const URL = process.env.URL;
 
-export const fetchPhotos = ({ page, loggedIn }) => async dispatch => {
+export const fetchPhotos = ({ page, loggedIn, signal }) => async dispatch => {
   try {
-    const response = await fetch(`${URL}/api/photo?page=${page}`, {
+    const response = await fetch(`${URL}/api/photo?page=${page - 1}`, {
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
       },
+      signal,
     });
     const data = await response.json();
     if (response.status === 200) {
@@ -37,6 +38,7 @@ export const fetchPhotos = ({ page, loggedIn }) => async dispatch => {
     }
     return dispatch(fetchPhotosFail(data));
   } catch (err) {
+    if (err.name === 'AbortError') return true;
     return dispatch(
       fetchPhotosFail({
         error: 'Oops! Looks like something went wrong',
@@ -45,12 +47,13 @@ export const fetchPhotos = ({ page, loggedIn }) => async dispatch => {
   }
 };
 
-export const fetchPhoto = ({ photoId, loggedIn }) => async dispatch => {
+export const fetchPhoto = ({ photoId, loggedIn, signal }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/photo?photoId=${photoId}`, {
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
       },
+      signal,
     });
     const data = await response.json();
     if (response.status === 200) {
@@ -60,6 +63,7 @@ export const fetchPhoto = ({ photoId, loggedIn }) => async dispatch => {
     }
     return dispatch(fetchPhotoFail(data));
   } catch (err) {
+    if (err.name === 'AbortError') return true;
     return dispatch(
       fetchPhotoFail({
         error: 'Oops! Looks like something went wrong',

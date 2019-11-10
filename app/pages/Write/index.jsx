@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
-import './style.scss';
 import * as Actions from '../../actions';
 import ReactQuillEditor from '../../components/ReactQuillEditor';
 
@@ -11,33 +11,41 @@ class Write extends React.Component {
     loading: false,
   };
 
+  abortController = new AbortController();
+
   async componentWillMount() {
     const { refresh, loggedIn } = this.props;
     this.setState({ loading: true });
-    await refresh({ loggedIn });
+    const isAborted = await refresh({ loggedIn, signal: this.abortController.signal });
+    if (isAborted === true) return;
     this.setState({ loading: false });
   }
 
+  componentWillUnmpount() {
+    this.abortController.abort();
+  }
+
   render() {
-    const { loading, storyHtml, error } = this.state;
-    const { loggedIn, role } = this.props;
+    const { loading } = this.state;
+    const { loggedIn, user } = this.props;
 
-    if (loading) return <div>Loading</div>;
-
+    if (loading) return <div />;
     if (!loggedIn) return (window.location.href = process.env.OAUTH_URL);
-
-    if (role !== 'Admin') return <Redirect to="/" />;
+    if (user.role !== 'Admin') return <Redirect to="/" />;
 
     return (
-      <div className="write-page">
-        <ReactQuillEditor value={storyHtml} writePage={true} value="" />
+      <div className="write-page page">
+        <Helmet>
+          <title>Write a Story | PentasticMe</title>
+        </Helmet>
+        <ReactQuillEditor value="" writePage={true} />
       </div>
     );
   }
 }
 
 const mapStateToProps = ({ auth, user }) => ({
-  role: user.data.role,
+  user: user.data,
   loggedIn: auth.loggedIn,
 });
 

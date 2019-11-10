@@ -18,7 +18,7 @@ const storyReducer = (
       return {
         ...state,
         data: {},
-        error: payload.error,
+        error: { status: 500, message: payload.error },
       };
     case Actions.clapStorySuccess: {
       const data = {
@@ -35,7 +35,7 @@ const storyReducer = (
     case Actions.clapStoryFail: {
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     }
     case Actions.unclapStorySuccess: {
@@ -53,7 +53,7 @@ const storyReducer = (
     case Actions.unclapStoryFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     case Actions.addBookmarkSuccess: {
       const data = {
@@ -69,7 +69,7 @@ const storyReducer = (
     case Actions.addBookmarkFail:
       return {
         ...state,
-        error: undefined,
+        error: { message: payload.error },
       };
     case Actions.deleteBookmarkSuccess: {
       const data = {
@@ -85,7 +85,7 @@ const storyReducer = (
     case Actions.deleteBookmarkFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     default:
       return state;

@@ -1,0 +1,67 @@
+.users-page {
+  .dashboard-heading {
+    max-width: 700px;
+    width: 90%;
+    margin: auto;
+    padding-top: 0.5em;
+    font-family: 'Crimson Text', sans-serif;
+    color: rgb(23, 64, 78);
+    .header-div {
+      background: white;
+      border-radius: 7px;
+      padding: 4px;
+      padding-left: 10px;
+      box-shadow: 1px 1px 5px rgb(119, 134, 139);
+      transition: 0.3s;
+      &:hover {
+        box-shadow: 7px 3px 10px #9fb3b9;
+      }
+    }
+  }
+  .counter-container {
+    max-width: 700px;
+    width: 90%;
+    margin: auto;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    text-align: center;
+    .stories-count,
+    .photos-count {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: end;
+      width: 250px;
+      height: 200px;
+      margin: 0.5em 1em;
+      background: #fff;
+      border-radius: 20px;
+      color: orange;
+      fill: orange;
+      border: 1px solid rgb(197, 197, 197);
+      svg {
+        display: inline-block;
+        height: 70px !important;
+        width: 70px !important;
+        margin: auto !important;
+        margin-bottom: 10px !important;
+      }
+      .counter-description {
+        color: black;
+        font-size: 1.5em;
+        margin-bottom: 10px;
+      }
+    }
+  }
+  .error-message-container {
+    max-width: 600px;
+  }
+  .circle-loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .table-container {
+    margin-top: 1.5em;
+  }
+}

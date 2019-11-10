@@ -1,3 +1,36 @@
 .upload-page {
-  margin-top: 48px;
+  .upload-heading {
+    padding-top: 0.5em;
+    font-family: 'Crimson Text', sans-serif;
+    color: rgb(23, 64, 78);
+    .header-div {
+      background: white;
+      border-radius: 7px;
+      padding-left: 10px;
+      box-shadow: 1px 1px 5px rgb(119, 134, 139);
+      transition: 0.3s;
+      &:hover {
+        box-shadow: 7px 3px 10px #9fb3b9;
+      }
+    }
+  }
+  .btn-dark-green {
+    color: darkolivegreen;
+    border-color: darkolivegreen;
+    &:hover {
+      color: white;
+      background: darkolivegreen;
+      border-color: darkolivegreen;
+    }
+  }
+  .image-upload-container {
+    .error-message-container {
+      width: 100%;
+      max-width: 1150px;
+    }
+  }
+  .error-message-container {
+    width: 100%;
+    max-width: 1150px;
+  }
 }

@@ -4,6 +4,7 @@ const photosReducer = (
   state = {
     data: [],
     error: undefined,
+    pages: 1,
   },
   { type, payload },
 ) => {
@@ -18,18 +19,20 @@ const photosReducer = (
       return {
         ...state,
         data: [],
-        error: payload.error,
+        error: { status: 500, message: payload.error },
       };
     case Actions.fetchPhotosSuccess:
       return {
         ...state,
         data: payload.photos,
+        pages: payload.pages,
         error: undefined,
       };
     case Actions.fetchPhotosFail:
       return {
         ...state,
-        error: payload.error,
+        error: { status: 500, message: payload.error },
+        pages: 1,
         data: [],
       };
     case Actions.likePhotosSuccess: {
@@ -52,7 +55,7 @@ const photosReducer = (
     case Actions.likePhotosFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     case Actions.dislikePhotosSuccess: {
       const data = state.data.map(photo => {
@@ -74,7 +77,7 @@ const photosReducer = (
     case Actions.dislikePhotosFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     default:
       return state;

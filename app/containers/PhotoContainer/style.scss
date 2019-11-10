@@ -1,0 +1,51 @@
+.photo-container-fluid {
+  max-width: 700px;
+  margin: auto;
+  border-radius: 5px;
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+  height: 10%;
+  margin: auto 5px;
+  width: 5%;
+  max-width: 30px;
+}
+
+.carousel-indicators {
+  width: 50%;
+  margin: auto;
+  margin-bottom: 1%;
+  li {
+    width: 10%;
+    max-width: 30px;
+  }
+}
+
+.comments-list {
+  background: white;
+}
+
+.comment-input-box {
+  position: sticky;
+  bottom: 0;
+  background-color: rgb(237, 241, 243);
+  padding: 1em;
+}
+
+.disabled {
+  color: #007bffb6;
+  &:hover {
+    cursor: not-allowed;
+  }
+}
+
+.comment-input {
+  border: none;
+  outline: none;
+  background-color: inherit;
+  border-bottom: 1px solid rgb(219, 219, 219);
+  &.photo-comment {
+    width: 90%;
+  }
+}

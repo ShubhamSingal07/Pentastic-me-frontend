@@ -12,12 +12,13 @@ const fetchContactFail = payload => ({
 
 const URL = process.env.URL;
 
-export const fetchContact = ({ loggedIn }) => async dispatch => {
+export const fetchContact = ({ loggedIn, signal }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/contact`, {
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
       },
+      signal,
     });
     const data = await response.json();
     if (response.status === 200) {
@@ -28,6 +29,7 @@ export const fetchContact = ({ loggedIn }) => async dispatch => {
     }
     return fetchContactFail(data);
   } catch (err) {
+    if (err.name === 'AbortError') return true;
     return dispatch(
       fetchContactFail({
         error: 'Oops! Looks like something went wrong',

@@ -12,10 +12,14 @@ import dividerIcon from './icons/divider.svg';
 import * as Actions from '../../actions';
 import DraftSaveModal from '../DraftSaveModal';
 import PublishModal from '../PublishModal';
+import editIcon from '../../../public/icons/edit.svg';
+import ErrorMessage from '../Error/ErrorMessage';
 
 class Editor extends React.PureComponent {
   state = {
-    title: '',
+    draftTitle: '',
+    storyTitle: '',
+    description: '',
     editorHtml: '',
     readOnly: false,
     readOnlyClassName: '',
@@ -28,23 +32,22 @@ class Editor extends React.PureComponent {
   };
 
   componentDidMount() {
-    // const { readOnly } = this.state;
-    const { value, storyPage } = this.props;
+    const { value, storyPage, aboutPage, contactPage, draftTitle, storyTitle, storyDescription } = this.props;
     this.editor.focus();
     this.registerFormats();
-    // if (!readOnly) this.countWords();
     this.setState({
       editorHtml: value,
+      draftTitle,
+      storyTitle,
+      description: storyDescription,
     });
-    if (storyPage) {
+    if (storyPage || aboutPage || contactPage) {
       this.setState({ readOnly: true, readOnlyClassName: 'readOnly' });
     }
   }
 
   componentDidUpdate() {
-    // const { readOnly } = this.state;
     this.registerFormats();
-    // if (!readOnly) this.countWords();
   }
 
   insertDivider = () => {
@@ -60,69 +63,57 @@ class Editor extends React.PureComponent {
     });
   };
 
-  registerFormats() {
-    if (typeof this.editor.getEditor !== 'function') return;
-    if (this.quillRef != null) return;
-    const quillRef = this.editor.getEditor();
-    if (quillRef != null) {
-      this.quillRef = quillRef;
-    }
-  }
-
-  // countWords() {
-  //   this.quillRef.on('text-change', this.update.bind(this));
-  //   this.unit = 'word';
-  //   this.update();
-  // }
-
-  // update() {
-  //   const length = this.calculate();
-  //   let label = this.unit;
-  //   if (length !== 1) {
-  //     label += 's';
-  //   }
-  //   this.countOfWords = `${length} ${label}`;
-  // }
-
-  // calculate() {
-  //   let text = this.quillRef.getText();
-  //   if (this.unit === 'word') {
-  //     text = text.trim();
-  //     return text.length > 0 ? text.split(/\s+/).length : 0;
-  //   }
-  //   return text.length;
-  // }
-
   handleEditClick = () => {
     this.setState({ showSave: true, readOnly: false, readOnlyClassName: '' });
   };
 
   handleSaveClick = async () => {
-    const { title, editorHtml } = this.state;
-    const { writePage, draftPage, draftId } = this.props;
+    const { draftTitle, editorHtml } = this.state;
+    const { writePage, draftPage, draftId, aboutPage, contactPage } = this.props;
 
-    if (!title) return;
+    if ((writePage || draftPage) && !draftTitle) return;
     this.setState({ showDraftModal: false, saveLoading: true, error: undefined });
     let data;
-    if (writePage) data = await Actions.addDraft(title, editorHtml);
-    else if (draftPage) data = await Actions.addDraft(title, editorHtml, draftId);
+    if (aboutPage) data = await Actions.addAbout(editorHtml);
+    else if (contactPage) data = await Actions.addContact(editorHtml);
+    else if (writePage) data = await Actions.addDraft(draftTitle, editorHtml);
+    else if (draftPage) data = await Actions.addDraft(draftTitle, editorHtml, draftId);
     if (data.error) this.setState({ saveLoading: false, error: data.error });
     else {
-      this.setState({ saveLoading: false, error: undefined });
-      if (writePage) this.props.history.push(`/drafts/${data.draftId}`);
+      if (aboutPage || contactPage) {
+        this.setState({ readOnly: true, showSave: false, readOnlyClassName: 'readOnly' });
+      } else {
+        this.setState({ saveLoading: false, error: undefined });
+        if (writePage) this.props.history.push(`/drafts/${data.draftId}`);
+      }
     }
   };
 
   handlePublishClick = async () => {
-    const { title, editorHtml } = this.state;
+    const { storyTitle, editorHtml, description } = this.state;
     const { storyPage, writePage, draftPage, storyId, draftId, images } = this.props;
 
-    if (!images.data[0] || !title) return;
+    if (!images.data[0] || !storyTitle) return;
     this.setState({ showPublishModal: false, publishLoading: true, error: undefined });
     let data;
-    if (writePage) data = await Actions.publishStory(title, editorHtml, images.data[0].url);
-    else if (draftPage) data = await Actions.publishDraft(draftId, title, editorHtml, images.data[0].url);
-    else data = await Actions.editStory(storyId, title, editorHtml, images.data[0].url);
+    if (writePage)
+      data = await Actions.publishStory(storyTitle, editorHtml, images.data[images.data.length - 1].url, description);
+    else if (draftPage)
+      data = await Actions.publishDraft(
+        draftId,
+        storyTitle,
+        editorHtml,
+        images.data[images.data.length - 1].url,
+        description,
+      );
+    else
+      data = await Actions.editStory(
+        storyId,
+        storyTitle,
+        editorHtml,
+        images.data[images.data.length - 1].url,
+        description,
+      );
     if (data.error) this.setState({ publishLoading: false, error: data.error });
     else {
       if (storyPage)
@@ -134,8 +125,16 @@ class Editor extends React.PureComponent {
     }
   };
 
-  handleTitleChange = e => {
-    this.setState({ title: e.target.value });
+  handleDraftTitleChange = e => {
+    this.setState({ draftTitle: e.target.value });
+  };
+
+  handleStoryTitleChange = e => {
+    this.setState({ storyTitle: e.target.value });
+  };
+
+  handleDescriptionChange = e => {
+    this.setState({ description: e.target.value });
   };
 
   showDraftModal = () => {
@@ -154,6 +153,13 @@ class Editor extends React.PureComponent {
     this.setState({ showPublishModal: false });
   };
 
+  registerFormats() {
+    if (typeof this.editor.getEditor !== 'function') return;
+    if (this.quillRef != null) return;
+    const quillRef = this.editor.getEditor();
+    if (quillRef != null) this.quillRef = quillRef;
+  }
+
   render() {
     const {
       editorHtml,
@@ -162,29 +168,32 @@ class Editor extends React.PureComponent {
       showPublishModal,
       readOnly,
       error,
-      title,
+      draftTitle,
+      storyTitle,
+      description,
       showSave,
     } = this.state;
-    const { storyPage, role } = this.props;
-
-    if (error) return <div className="draft-page">{error}</div>;
+    const { storyPage, writePage, draftPage, role, aboutPage, contactPage } = this.props;
 
     return (
       <div>
         <div>
           <DraftSaveModal
-            titleChange={this.handleTitleChange}
+            titleChange={this.handleDraftTitleChange}
             show={showDraftModal}
             onHide={this.hideDraftModal}
+            page={aboutPage || contactPage}
             handleClick={this.handleSaveClick}
-            title={title}
+            title={draftTitle}
           />
           <PublishModal
-            titleChange={this.handleTitleChange}
+            titleChange={this.handleStoryTitleChange}
+            descriptionChange={this.handleDescriptionChange}
             show={showPublishModal}
             onHide={this.hidePublishModal}
             handleClick={this.handlePublishClick}
-            title={title}
+            title={storyTitle}
+            description={description}
           />
         </div>
         <div id="toolbar" className={`ql-toolbar ql-snow ${readOnlyClassName}`}>
@@ -224,6 +233,8 @@ class Editor extends React.PureComponent {
               <option value="sans-serif">Sans Serif</option>
               <option value="serif">Serif</option>
               <option value="monospace">Monospace</option>
+              <option value="merriweather">Merriweather</option>
+              <option value="aref-ruqaa">Aref Ruqaa</option>
             </select>
           </span>
           <span className="ql-formats">
@@ -244,15 +255,31 @@ class Editor extends React.PureComponent {
           </span>
         </div>
 
-        <div>
-          {!storyPage && role === 'Admin' ? (
+        {error ? <ErrorMessage message={error} /> : null}
+
+        <div className="all-btns mb-3 mt-2 text-right">
+          {(writePage || draftPage) && role === 'Admin' ? (
             <div>
-              <button onClick={this.showDraftModal}>Save</button>
-              <button onClick={this.showPublishModal}>Publish</button>
+              <button className="btn btn-outline-success btn-dark-green mr-2" onClick={this.showDraftModal}>
+                Save
+              </button>
+              <button className="btn btn-outline-primary btn-blue-grey mr-2" onClick={this.showPublishModal}>
+                Publish
+              </button>
             </div>
           ) : null}
-          {storyPage && role === 'Admin' && !showSave ? <button onClick={this.handleEditClick}>Edit</button> : null}
-          {storyPage && showSave ? <button onClick={this.showPublishModal}>Save</button> : null}
+          {(storyPage || aboutPage || contactPage) && role === 'Admin' && !showSave ? (
+            <button className="btn p-2 border border-primary mr-2" onClick={this.handleEditClick}>
+              <img src={editIcon} />
+            </button>
+          ) : null}
+          {(storyPage || aboutPage || contactPage) && showSave ? (
+            <button
+              className="btn btn-outline-success btn-dark-green mr-2"
+              onClick={storyPage ? this.showPublishModal : this.handleSaveClick}>
+              Save
+            </button>
+          ) : null}
         </div>
 
         <ReactQuill
@@ -277,8 +304,6 @@ class Editor extends React.PureComponent {
             },
           }}
         />
-
-        {/* {!readOnly ? <div id="counter">{this.countOfWords}</div> : null} */}
       </div>
     );
   }

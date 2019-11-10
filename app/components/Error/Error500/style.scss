@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css?family=Bungee+Inline|Great+Vibes|Poiret+One&display=swap');
+
+.error-500-container {
+  font-family: 'Poiret One', cursive;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  box-sizing: border-box;
+  flex-flow: column;
+  color: #777676;
+  margin: 0;
+  padding: 10px;
+
+  .error-500 {
+    h1 {
+      font-family: 'Bungee Inline', cursive;
+      color: #690101;
+      font-size: 4em;
+      line-height: 1;
+      text-shadow: 1px 1px 1px #d4d4d4;
+      margin-bottom: 0;
+      background: #ffc2c2;
+      width: 40%;
+      margin: 0 auto;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 8px solid #dadada;
+      margin-top: 10%;
+      box-shadow: inset 0px 0px 5px #444444;
+      position: relative;
+
+      &::before {
+        position: absolute;
+        top: -1100px;
+        width: 6px;
+        background: #dadada;
+        height: 1476%;
+        content: '';
+      }
+
+      @media (max-width: 450px) {
+        font-size: 3em !important;
+      }
+    }
+
+    .error-desc {
+      margin-top: 0;
+      text-align: center;
+      color: #333;
+      text-shadow: 0px 0px #ededed;
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: 30px;
+    }
+  }
+
+  .signature {
+    font-size: 17px;
+
+    .signature-name {
+      font-family: 'Great Vibes', cursive;
+      font-size: 35px;
+      background-repeat: no-repeat;
+      background-position: left center;
+      padding-left: 27px;
+    }
+  }
+}

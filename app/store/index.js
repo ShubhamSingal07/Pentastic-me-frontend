@@ -5,9 +5,9 @@ import Reducer from './reducers';
 import Actions from './actions';
 
 const localStorageMiddleware = store => next => action => {
-  if (action.type == Actions.loginSuccess) {
+  if (action.type === Actions.loginSuccess) {
     localStorage.jwt = action.payload.token;
-  } else if (action.type == Actions.logout) {
+  } else if (action.type === Actions.logout) {
     delete localStorage.jwt;
   }
   next(action);

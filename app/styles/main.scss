@@ -1,11 +1,88 @@
 @import './bootstrap/bootstrap.min.css';
+@import url('https://fonts.googleapis.com/css?family=Crimson+Text:700i|Merriweather&display=swap');
 
-body {
-  background: white;
+.border-grey {
+  border-color: grey !important;
 }
 
-// .editor-block {
-//   margin: 1em auto;
-//   width: 90%;
-//   max-width: 800px;
-// }
+button {
+  outline: 0;
+  box-shadow: none;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  &:focus {
+    box-shadow: none;
+    outline: 0;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.btn {
+  &:focus {
+    box-shadow: none;
+    outline: 0;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+  &.btn-outline-success,
+  &.btn-outline-primary {
+    &:active:focus {
+      box-shadow: none !important;
+    }
+  }
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.page {
+  margin-top: 50px !important;
+  @media (max-width: 992px) {
+    margin-top: 55px;
+  }
+  margin-bottom: 60px !important;
+  &.photos-page,
+  &.stories-page {
+    margin-bottom: 100px !important;
+  }
+}
+
+#app {
+  background-color: rgb(215, 230, 233);
+  min-height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.show > .btn-outline-primary.dropdown-toggle {
+  color: #fff;
+  background-color: rgb(66, 111, 114);
+  border-color: rgb(66, 111, 114);
+}
+
+.btn-outline-success:not(:disabled):not(.disabled).active,
+.btn-outline-success:not(:disabled):not(.disabled):active,
+.show > .btn-outline-success.dropdown-toggle {
+  color: #fff;
+  background-color: darkolivegreen;
+  border-color: darkolivegreen;
+}
+
+.alert {
+  max-width: 1140px;
+  margin: 1em auto;
+  border-color: #dac27b;
+  &.bookmark-alert {
+    max-width: 690px;
+  }
+}

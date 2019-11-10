@@ -1,3 +1,60 @@
 .about-page {
-  margin-top: 48px;
+  .img-container {
+    .bg-image {
+      height: 300px;
+      @media (max-width: 768px) {
+        height: 250px;
+      }
+      @media (max-width: 576px) {
+        height: 200px;
+      }
+    }
+    .image-upload-loader-container {
+      position: absolute;
+      top: 23%;
+      left: 47%;
+      width: 100%;
+      @media (max-width: 768px) {
+        top: 19%;
+      }
+      @media (max-width: 576px) {
+        top: 15%;
+      }
+    }
+  }
+
+  .editBtn {
+    background: white;
+    position: absolute;
+    top: 58px;
+    right: 10px;
+  }
+
+  .about-container {
+    .about-heading {
+      color: rgb(23, 64, 78);
+      font-family: 'Crimson Text', serif;
+      &.con {
+        background: white;
+        position: relative;
+        top: -50px;
+        border-radius: 5px;
+        box-shadow: 1px 1px 1px rgb(199, 213, 214);
+        animation: bottomToTop 0.3s linear;
+
+        @keyframes bottomToTop {
+          0% {
+            top: 50px;
+          }
+          100% {
+            top: -50px;
+          }
+        }
+      }
+
+      max-width: 750px;
+      width: 95%;
+      margin: auto;
+    }
+  }
 }

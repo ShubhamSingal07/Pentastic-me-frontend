@@ -10,12 +10,13 @@ const fetchHomePageFail = payload => ({
   payload,
 });
 
-export const fetchHomePage = ({ loggedIn }) => async dispatch => {
+export const fetchHomePage = ({ loggedIn, signal }) => async dispatch => {
   try {
     const response = await fetch(`${process.env.URL}/api/home`, {
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
       },
+      signal,
     });
     const data = await response.json();
     if (response.status === 200) {
@@ -25,6 +26,7 @@ export const fetchHomePage = ({ loggedIn }) => async dispatch => {
     }
     return dispatch(fetchHomePageFail(data));
   } catch (err) {
+    if (err.name === 'AbortError') return true;
     return dispatch(
       fetchHomePageFail({
         error: 'Oops! Looks like something went wrong.',

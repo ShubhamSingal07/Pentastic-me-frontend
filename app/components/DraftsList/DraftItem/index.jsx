@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import './style.scss';
+
 import * as Actions from '../../../actions';
 
 class DraftItem extends React.Component {
@@ -13,11 +15,15 @@ class DraftItem extends React.Component {
     };
 
     return (
-      <div>
+      <div className="draft-link">
         <Link to={`/drafts/${draft._id}`}>
-          <h2>{draft.title}</h2>
+          <div className="cool-link-hover">
+            <h2 className="cool-link">{draft.title}</h2>
+          </div>
         </Link>
-        <button onClick={handleRemoveDraft}>Remove</button>
+        <button className="remove" onClick={handleRemoveDraft}>
+          Remove
+        </button>
       </div>
     );
   }

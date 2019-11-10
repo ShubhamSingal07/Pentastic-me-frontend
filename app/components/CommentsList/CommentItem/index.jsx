@@ -1,7 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import './style.scss';
+
 import * as Actions from '../../../actions';
+import editIcon from '../../../../public/icons/edit.svg';
+import deleteIcon from '../../../../public/icons/delete.svg';
+import userIcon from '../../../../public/icons/user.svg';
 
 class CommentItem extends React.Component {
   state = {
@@ -11,11 +16,16 @@ class CommentItem extends React.Component {
     commentInput: '',
   };
 
-  handleSaveEditedComment = () => {
+  componentDidMount() {
+    const { comment } = this.props;
+    this.setState({ commentInput: comment.body });
+  }
+
+  handleSaveEditedComment = async () => {
     const { commentInput } = this.state;
     const { photoId, editComment, comment } = this.props;
     this.setState({ editLoading: true });
-    editComment({ photoId, commentId: comment._id, comment: commentInput });
+    await editComment({ photoId, commentId: comment._id, comment: commentInput });
     this.setState({ editLoading: false, editComment: false });
   };
 
@@ -36,23 +46,46 @@ class CommentItem extends React.Component {
     const { editLoading, deleteLoading, commentInput, editComment } = this.state;
     const { userId, comment } = this.props;
     return (
-      <div>
-        <div>
-          <span>{comment.name} </span>
-          <span> {comment.body}</span>
-        </div>
+      <div className="d-flex flex-row align-items-start comment-item">
+        <span className="mr-1">
+          <img className="rounded-circle" src={comment.thumbnail || userIcon} width="30px" />
+        </span>
+        <span className="p-1 pr-2">
+          <span className="font-weight-bold">{comment.name} </span>
+          {editComment ? (
+            <span>
+              <input
+                className="comment-input"
+                type="text"
+                value={commentInput}
+                onChange={this.handleValueChange}
+                placeholder="Add a comment"
+              />
+            </span>
+          ) : (
+            <span> {comment.body}</span>
+          )}
+        </span>
         {userId === comment.userId ? (
-          <div>
+          <span className="ml-auto">
             {!editComment ? (
-              <button onClick={() => this.setState({ editComment: true })}>Edit</button>
+              <span className="d-flex">
+                <button className="mr-2" onClick={() => this.setState({ editComment: true })}>
+                  <img src={editIcon} />
+                </button>
+                <button className="mr-1" onClick={this.handleDeleteComment}>
+                  <img src={deleteIcon} />
+                </button>
+              </span>
             ) : (
-              <div>
-                <input type="text" value={commentInput} onChange={this.handleValueChange} placeholder="Add a comment" />
-                <button onClick={this.handleSaveEditedComment}>Save</button>
-              </div>
+              <button
+                disabled={commentInput.trim().length === 0}
+                className={commentInput.trim().length === 0 ? 'mr-2 disabled' : 'mr-2 text-primary'}
+                onClick={this.handleSaveEditedComment}>
+                Save
+              </button>
             )}
-            <button onClick={this.handleDeleteComment}>Delete</button>
-          </div>
+          </span>
         ) : null}
       </div>
     );

@@ -12,12 +12,13 @@ const fetchAboutFail = payload => ({
 
 const URL = process.env.URL;
 
-export const fetchAbout = ({ loggedIn }) => async dispatch => {
+export const fetchAbout = ({ loggedIn, signal }) => async dispatch => {
   try {
     const response = await fetch(`${URL}/api/about`, {
       headers: {
         Authorization: `Token ${localStorage.jwt}`,
       },
+      signal,
     });
     const data = await response.json();
     if (response.status === 200) {
@@ -28,6 +29,7 @@ export const fetchAbout = ({ loggedIn }) => async dispatch => {
     }
     return dispatch(fetchAboutFail(data));
   } catch (err) {
+    if (err.name === 'AbortError') return true;
     return dispatch(
       fetchAboutFail({
         error: 'Oops! Looks like something went wrong',

@@ -6,6 +6,7 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  margin-top: 7px;
 }
 
 .hamRotate.open {
@@ -19,7 +20,7 @@
 .line {
   fill: none;
   transition: stroke-dasharray 400ms, stroke-dashoffset 400ms;
-  stroke: white;
+  stroke: black;
   stroke-width: 5.5;
   stroke-linecap: round;
 }

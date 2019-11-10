@@ -4,13 +4,12 @@ import PhotosItem from './PhotosItem';
 
 const PhotosList = ({ photos }) => (
   <div>
-    <h1>Photos</h1>
     {photos.length === 0 ? (
-      <div>No photo has been uploaded by admin</div>
+      <div className="alert alert-warning">No photo has been uploaded by admin</div>
     ) : (
-      <div>
-        {photos.map(photo => (
-          <PhotosItem photo={photo} key={photo._id} />
+      <div className="container-fluid row">
+        {photos.map((photo, index) => (
+          <PhotosItem photo={photo} key={photo._id} index={index} />
         ))}
       </div>
     )}

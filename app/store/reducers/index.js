@@ -12,6 +12,7 @@ import bookmarksReducer from './bookmarksReducer';
 import draftsReducer from './draftsReducer';
 import draftReducer from './draftReducer';
 import imagesReducer from './imagesReducer';
+import usersReducer from './usersReducer';
 
 const Reducer = combineReducers({
   about: aboutReducer,
@@ -26,6 +27,7 @@ const Reducer = combineReducers({
   draft: draftReducer,
   drafts: draftsReducer,
   images: imagesReducer,
+  users: usersReducer,
 });
 
 export default Reducer;

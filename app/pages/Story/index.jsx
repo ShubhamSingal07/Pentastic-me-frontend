@@ -1,11 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import './style.scss';
+
 import * as Actions from '../../actions';
 import ReactQuillEditor from '../../components/ReactQuillEditor';
-import PublishModal from '../../components/PublishModal';
+import ClapHandsIcon from '../../components/ClapHands';
+import BookmarkIcon from '../../components/BookmarkIcon';
+import Error500 from '../../components/Error/Error500';
+import ErrorMessage from '../../components/Error/ErrorMessage';
 
 const OAUTH_URL = process.env.OAUTH_URL;
 
@@ -14,14 +18,24 @@ class Story extends React.Component {
     loading: false,
     clapLoading: false,
     bookmarkLoading: false,
+    storyHtml: '',
+    title: '',
+    description: '',
   };
 
+  abortController = new AbortController();
+
   async componentDidMount() {
-    const { match, fetchStory, loggedIn, story } = this.props;
+    const { match, fetchStory, loggedIn } = this.props;
     const storyId = match.params.storyId;
     this.setState({ loading: true });
-    const body = await fetchStory({ storyId, loggedIn });
-    this.setState({ loading: false, storyHtml: body });
+    const data = await fetchStory({ storyId, loggedIn, signal: this.abortController.signal });
+    if (data === true) return;
+    this.setState({ loading: false, storyHtml: data.body, title: data.title, description: data.description });
+  }
+
+  componentWillUnmount() {
+    this.abortController.abort();
   }
 
   handleClapStory = () => {
@@ -57,26 +71,55 @@ class Story extends React.Component {
   };
 
   render() {
-    const { loading, clapLoading, bookmarkLoading, storyHtml } = this.state;
+    const { loading, clapLoading, bookmarkLoading, storyHtml, title, description } = this.state;
     const { story, match } = this.props;
-    if (loading) return <div>Loading</div>;
 
-    if (story.error) return <div>{story.error}</div>;
+    if (loading) return <div />;
+
+    if (story.error && story.error.status === 500) return <Error500 />;
 
     return (
-      <div className="story-page">
-        <ReactQuillEditor value={storyHtml} storyPage={true} storyId={match.params.storyId} />
-        <div>
-          {story.data.isLiked ? (
-            <button onClick={this.handleUnclapStory}>Unclap</button>
-          ) : (
-            <button onClick={this.handleClapStory}>Clap</button>
-          )}
-          {story.data.isBookmarked ? (
-            <button onClick={this.handleRemoveBookmarkStory}>Unbookmark</button>
-          ) : (
-            <button onClick={this.handleAddBookmarkStory}>Bookmark</button>
-          )}
+      <div className="story-page page">
+        <Helmet>
+          <title>{title} | PentasticMe</title>
+        </Helmet>
+        {story.error ? <ErrorMessage message={story.error.message} /> : null}
+        <div className=" d-flex flex-column flex-lg-row-reverse justify-content-end">
+          {/* <div class="sharethis-inline-share-buttons" /> */}
+          <div className="editor-container">
+            <ReactQuillEditor
+              value={storyHtml}
+              storyPage={true}
+              storyId={match.params.storyId}
+              storyTitle={title}
+              storyDescription={description}
+            />
+          </div>
+
+          <div className="btn-container position-sticky">
+            <div className="btn-con d-inline-block text-left">
+              <div className="clapHandsBtn">
+                <button
+                  className={`border rounded-circle p-1 click-btn ${
+                    story.data.isLiked ? 'border-primary' : 'border-grey'
+                  }`}
+                  onClick={story.data.isLiked ? this.handleUnclapStory : this.handleClapStory}>
+                  <ClapHandsIcon isLiked={story.data.isLiked} />
+                </button>
+                <span style={story.data.isLiked ? { color: '#007bff' } : { color: 'grey' }}>
+                  {' '}
+                  {story.data.claps > 0 ? story.data.claps : null}
+                </span>
+              </div>
+              <div className="bookmarkBtn mt-3">
+                <button
+                  className="click-btn mx-auto p-1"
+                  onClick={story.data.isBookmarked ? this.handleRemoveBookmarkStory : this.handleAddBookmarkStory}>
+                  <BookmarkIcon isBookmarked={story.data.isBookmarked} />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

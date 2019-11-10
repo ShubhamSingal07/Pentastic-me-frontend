@@ -1,6 +1,6 @@
 const URL = process.env.URL;
 
-export const publishDraft = async (draftId, title, body, image) => {
+export const publishDraft = async (draftId, title, body, image, description) => {
   try {
     const response = await fetch(`${URL}/api/draft/publish`, {
       method: 'POST',
@@ -8,7 +8,7 @@ export const publishDraft = async (draftId, title, body, image) => {
         Authorization: `Token ${localStorage.jwt}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ draftId, title, body, image }),
+      body: JSON.stringify({ draftId, title, body, image, description }),
     });
     return await response.json();
     // return data;

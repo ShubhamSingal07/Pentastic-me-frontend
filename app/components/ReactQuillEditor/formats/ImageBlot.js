@@ -1,25 +1,27 @@
 import { Quill } from 'react-quill';
 
-import loading from '../../../../public/icons/loading.svg';
+import loading from '../../../../public/images/830.svg';
 import * as Actions from '../../../actions';
 
 const BlockEmbed = Quill.import('blots/block/embed');
 
 class ImageBlot extends BlockEmbed {
   static create(value) {
-    let node = super.create();
+    const node = super.create();
     if (typeof value === 'string') {
       const file = this.dataURLtoFile(value);
       Actions.uploadImageBase64(file).then(data => {
-        node.setAttribute('src', data.image);
+        node.setAttribute('src', data.image[0].url);
+        node.setAttribute('height', 'auto');
         return node;
       });
       node.setAttribute('src', loading);
-      return node;
-    } else {
-      node.setAttribute('src', value.url);
+      node.setAttribute('width', '100%');
+      node.setAttribute('height', '200px');
       return node;
     }
+    node.setAttribute('src', value.url);
+    return node;
   }
 
   static value(node) {
@@ -29,11 +31,11 @@ class ImageBlot extends BlockEmbed {
   }
 
   static dataURLtoFile(dataurl) {
-    let arr = dataurl.split(','),
-      mime = arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]),
-      n = bstr.length,
-      u8arr = new Uint8Array(n);
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }

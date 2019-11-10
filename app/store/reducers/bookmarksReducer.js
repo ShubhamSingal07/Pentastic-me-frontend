@@ -18,7 +18,7 @@ const bookmarkReducer = (
       return {
         ...state,
         data: undefined,
-        error: payload.error,
+        error: { status: 500, message: payload.error },
       };
     case Actions.deleteBookmarksSuccess: {
       const data = state.data.filter(({ _id }) => _id !== payload.storyId);
@@ -31,7 +31,7 @@ const bookmarkReducer = (
     case Actions.deleteBookmarksFail:
       return {
         ...state,
-        error: payload.error,
+        error: { message: payload.error },
       };
     default:
       return state;

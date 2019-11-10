@@ -57,7 +57,6 @@ export const deleteBookmarks = ({ storyId }) => async dispatch => {
     }
     return dispatch(deleteBookmarksFail(data));
   } catch (err) {
-    console.log(err);
     return dispatch(
       deleteBookmarksFail({
         error: 'Oops! Looks like something went wrong',

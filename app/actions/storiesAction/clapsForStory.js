@@ -50,6 +50,7 @@ export const unclapStory = ({ storyId }) => async dispatch => {
         Authorization: `Token ${localStorage.jwt}`,
       },
     });
+    const data = await response.json();
     if (response.status === 200) {
       return dispatch(unclapStorySuccess());
     }

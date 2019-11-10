@@ -1,15 +1,72 @@
 @import 'variables.scss';
+@import url('https://fonts.googleapis.com/css?family=Aref+Ruqaa|Merriweather&display=swap');
+
+.ql-snow .ql-picker.ql-font {
+  width: 136px;
+}
+
+#toolbar .ql-font span[data-label='Merriweather']::before {
+  font-family: 'Merriweather', serif;
+}
+
+.ql-font-merriweather {
+  font-family: 'Merriweather', serif;
+}
+
+#toolbar .ql-font span[data-label='Aref Ruqaa']::before {
+  font-family: 'Aref Ruqaa', serif;
+}
+
+.ql-font-aref-ruqaa {
+  font-family: 'Aref Ruqaa', serif;
+}
+
+.btn-blue-grey {
+  color: rgb(66, 111, 114);
+  border-color: rgb(66, 111, 114);
+  &:hover {
+    color: white;
+    background: rgb(66, 111, 114);
+    border-color: rgb(66, 111, 114);
+  }
+}
+
+.btn-dark-green {
+  color: darkolivegreen;
+  border-color: darkolivegreen;
+  &:hover {
+    color: white;
+    background: darkolivegreen;
+    border-color: darkolivegreen;
+  }
+}
 
 .ql-toolbar {
   position: sticky;
-  top: 48px;
+  top: 50px;
   opacity: 1;
   background: $lightBlue;
-  margin-bottom: 100px;
+  margin-bottom: 30px;
   z-index: 1;
   border: none !important;
-  border-radius: 3px;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
   text-align: center;
+  @media (max-width: 992px) {
+    top: 55px;
+  }
+}
+
+.ql-picker-label {
+  &:hover {
+    .ql-picker-options {
+      z-index: 5;
+    }
+  }
+}
+
+blockquote {
+  background-color: #f2f2f2;
 }
 
 .ql-formats > button,
@@ -31,6 +88,7 @@
   margin: 0 auto;
   width: 95%;
   max-width: 700px;
+  margin-bottom: 2em;
 }
 
 .ql-snow .ql-editor pre.ql-syntax {
@@ -51,6 +109,59 @@
 }
 
 .readOnly .ql-disabled {
-  margin-top: 70px;
+  margin-top: 1em;
   border: none !important;
+}
+
+.all-btns {
+  margin: 0 auto;
+  max-width: 800px;
+  .border-primary {
+    border-color: #33ccff !important;
+  }
+}
+
+.txtb {
+  border-bottom: 2px solid #adadad;
+  position: relative;
+  margin: 30px 0;
+  span:hover {
+    cursor: text;
+  }
+  .input {
+    font-size: 15px;
+    color: #333;
+    border: none;
+    width: 100%;
+    outline: none;
+    background: none;
+    padding: 0 5px;
+    height: 40px;
+    box-shadow: none;
+  }
+  span::before {
+    content: attr(data-placeholder);
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    color: #adadad;
+    transform: translateY(-50%);
+    z-index: -0.5;
+    transition: 0.5s;
+  }
+  span::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    transition: 0.5s;
+  }
+}
+
+.focus + span::before {
+  font-size: 12px;
+  top: -3px;
+}
+.focus.description-input + span::before {
+  top: -7px;
 }
