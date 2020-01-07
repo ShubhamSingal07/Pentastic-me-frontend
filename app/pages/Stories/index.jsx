@@ -66,7 +66,7 @@ class Stories extends React.Component {
           <div className="header-div">Stories</div>
         </h1>
         <StoriesList stories={stories.data} />
-        <Pagination pages={3} currentpage={match.params.pageNo} isStoryPage={true} />
+        <Pagination pages={stories.pages} currentpage={match.params.pageNo} isStoryPage={true} />
       </div>
     );
   }

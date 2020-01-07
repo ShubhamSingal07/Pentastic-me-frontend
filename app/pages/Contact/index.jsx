@@ -52,6 +52,7 @@ class Contact extends React.Component {
 
   render() {
     const { loading, name, email, message, showEmptyError, showErrorMessage, showTickAnimation } = this.state;
+    const MAIL_ID = process.env.MAIL_ID;
 
     if (loading) return <div />;
 
@@ -96,11 +97,15 @@ class Contact extends React.Component {
         <div className="contact-info">
           <div className="card">
             <i className="card-icon far fa-envelope" />
-            <p>pentasticme@gmail.com</p>
+            <p>
+              <a href={`mailto:${MAIL_ID}`}>{MAIL_ID}</a>
+            </p>
           </div>
           <div className="card">
-            <i className="card-icon fas fa-phone" />
-            <p>+91-9313731309</p>
+            <i className="card-icon fab fa-instagram" />
+            <p>
+              <a href="https://www.instagram.com/pentastic_photographer/">pentastic_photographer</a>
+            </p>
           </div>
           <div className="card">
             <i className="card-icon fas fa-map-marker-alt" />

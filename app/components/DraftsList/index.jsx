@@ -8,7 +8,7 @@ const DraftsList = ({ drafts }) => (
     {drafts.length > 0 ? (
       drafts.map(draft => <DraftItem draft={draft} key={draft._id} />)
     ) : (
-      <div>
+      <div className="alert alert-warning draft-alert">
         No more drafts.
         <Link to="/stories/write">Write a story now</Link>
       </div>

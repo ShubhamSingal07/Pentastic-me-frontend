@@ -79,10 +79,16 @@ body {
 }
 
 .alert {
+  width: 85%;
   max-width: 1140px;
   margin: 1em auto;
   border-color: #dac27b;
+  &.draft-alert {
+    width: 90%;
+    max-width: 700px;
+  }
   &.bookmark-alert {
+    width: 80%;
     max-width: 690px;
   }
 }
